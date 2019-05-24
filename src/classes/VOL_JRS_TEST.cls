@@ -1,12 +1,39 @@
-// Written by David Habib, copyright (c) 2010-2014 DJH Consulting, djhconsulting.com 
-// This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
+/*
+    Copyright (c) 2016, Salesforce.org
+    All rights reserved.
+    
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+    
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of Salesforce.org nor the names of
+      its contributors may be used to endorse or promote products derived
+      from this software without specific prior written permission.
+ 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
+    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
+    FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
+    COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
+    BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+    LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+    ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+    POSSIBILITY OF SUCH DAMAGE.
+*/
 
 @isTest
-public with sharing class VOL_JRS_TEST {
+private with sharing class VOL_JRS_TEST {
 
     //******************************************************************************************************
     // Test Job Recurrence Schedules    
-    public static testmethod void TestJRS() {
+    private static testmethod void TestJRS() {
 
 		// create test data
         Campaign cmp = new Campaign(recordtypeid=VOL_SharedCode.recordtypeIdVolunteersCampaign, 
@@ -125,5 +152,246 @@ public with sharing class VOL_JRS_TEST {
 		system.assertEquals(0, listShift.size());
 		
     }   
+
+    //******************************************************************************************************
+    // test that modifying a JRS reuses already existing Shifts    
+    private static testmethod void testJRSShiftReuse() {
+
+		// create test data
+        Campaign cmp = new Campaign(recordtypeid=VOL_SharedCode.recordtypeIdVolunteersCampaign, 
+        	name='Job Calendar Test Campaign', IsActive=true);
+        insert cmp;
+        Volunteer_Job__c job = new Volunteer_Job__c(name='Job1', campaign__c=cmp.Id);
+        insert job;
+        Job_Recurrence_Schedule__c jrs = new Job_Recurrence_Schedule__c(Volunteer_Job__c = job.Id);
+		jrs.Days_of_Week__c = 'Monday';
+		jrs.Duration__c = 1;
+		jrs.Schedule_Start_Date_Time__c = system.now();
+		jrs.Weekly_Occurrence__c = 'Every';
+		jrs.Desired_Number_of_Volunteers__c = 5;
+        jrs.Description__c = 'initial description';
+		insert jrs;      
+        
+        list<Volunteer_Shift__c> listShift = [select Id from Volunteer_Shift__c];
+        set<ID> setShiftId = new set<ID>();
+        for (Volunteer_Shift__c shift : listShift)
+            setShiftId.add(shift.Id);
+        integer cShifts = setShiftId.size();
+        system.assert(cShifts > 0);
+        
+        // now modify the JRS
+        jrs.Days_of_Week__c = 'Monday;Tuesday';
+        jrs.Description__c = 'new description';
+        Test.startTest();
+        update jrs;
+        Test.stopTest();
+        
+        listShift = [select Id, CreatedDate, LastModifiedDate, Description__c from Volunteer_Shift__c];
+        integer cShiftsInitial = 0;
+        integer cShiftsNew = 0;
+        for (Volunteer_Shift__c shift : listShift) {
+            if (setShiftId.contains(shift.Id)) {
+                cShiftsInitial++;
+            } else {
+                cShiftsNew++;
+            }
+            system.assertEquals('new description', shift.Description__c);
+        }
+        system.assertEquals(cShifts, cShiftsInitial);
+        system.assert(cShifts == cShiftsNew || cShifts == cShiftsNew-1 || cShifts == cShiftsNew+1); 
+    }
+        
+    //******************************************************************************************************
+    // test that modifying a JRS deletes already existing Shifts that no longer match the JRS
+    private static testmethod void testJRSShiftDelete() {
+
+		// create test data
+        Campaign cmp = new Campaign(recordtypeid=VOL_SharedCode.recordtypeIdVolunteersCampaign, 
+        	name='Job Calendar Test Campaign', IsActive=true);
+        insert cmp;
+        Volunteer_Job__c job = new Volunteer_Job__c(name='Job1', campaign__c=cmp.Id);
+        insert job;
+        Job_Recurrence_Schedule__c jrs = new Job_Recurrence_Schedule__c(Volunteer_Job__c = job.Id);
+		jrs.Days_of_Week__c = 'Monday';
+		jrs.Duration__c = 1;
+		jrs.Schedule_Start_Date_Time__c = system.now();
+		jrs.Weekly_Occurrence__c = 'Every';
+		jrs.Desired_Number_of_Volunteers__c = 5;
+        jrs.Description__c = 'initial description';
+		insert jrs;
+        
+        list<Volunteer_Shift__c> listShift = [select Id from Volunteer_Shift__c];
+        set<ID> setShiftId = new set<ID>();
+        for (Volunteer_Shift__c shift : listShift)
+            setShiftId.add(shift.Id);
+        integer cShifts = setShiftId.size();
+        system.assert(cShifts > 0);
+        
+        // now modify the JRS
+        jrs.Days_of_Week__c = 'Tuesday';
+        jrs.Description__c = 'new description';
+        Test.startTest();
+        update jrs;
+        Test.stopTest();
+        
+        listShift = [select Id, CreatedDate, LastModifiedDate, Description__c from Volunteer_Shift__c];
+        integer cShiftsInitial = 0;
+        integer cShiftsNew = 0;
+        for (Volunteer_Shift__c shift : listShift) {
+            if (setShiftId.contains(shift.Id)) {
+                cShiftsInitial++;
+            } else {
+                cShiftsNew++;
+            }
+            system.assertEquals('new description', shift.Description__c);
+        }
+        system.assertEquals(0, cShiftsInitial);
+        system.assert(cShifts == cShiftsNew || cShifts == cShiftsNew-1 || cShifts == cShiftsNew+1); 
+    }
+
+    //******************************************************************************************************
+    // test that deleting a JRS deletes Shifts with no Hours, and just detaches Shifts with Hours.
+    private static testmethod void testJRSDelete() {
+
+        // create test data
+        Account acc = new Account(name='account1');
+        insert acc;
+        Contact con = new Contact(Lastname='foo', AccountId=acc.Id);
+        insert con;
+        Campaign cmp = new Campaign(recordtypeid=VOL_SharedCode.recordtypeIdVolunteersCampaign, 
+            name='Job Calendar Test Campaign', IsActive=true);
+        insert cmp;
+        Volunteer_Job__c job = new Volunteer_Job__c(name='Job1', campaign__c=cmp.Id);
+        insert job;
+        Job_Recurrence_Schedule__c jrs = new Job_Recurrence_Schedule__c(Volunteer_Job__c = job.Id);
+        jrs.Days_of_Week__c = 'Monday';
+        jrs.Duration__c = 1;
+        jrs.Schedule_Start_Date_Time__c = system.today().addMonths(-1).toStartOfMonth();
+        jrs.Schedule_End_Date__c = system.today().addmonths(2).toStartOfMonth().addDays(-1);
+        jrs.Weekly_Occurrence__c = 'Every';
+        jrs.Desired_Number_of_Volunteers__c = 5;
+        jrs.Description__c = 'initial description';
+        insert jrs;
+        
+        list<Volunteer_Shift__c> listShift = [select Id, Volunteer_Job__c, Start_Date_Time__c from Volunteer_Shift__c];
+        integer countTotalShifts = listShift.size();
+        system.assert(countTotalShifts >= 12);    // we should get at least 4 Mondays each month.
+        
+        // now create Hours for half the shifts
+        list<Volunteer_Hours__c> listHours = new list<Volunteer_Hours__c>();
+        integer countShiftsWithHours = 0;
+        for (integer i = 0; i < listShift.size(); i++) {
+            if (Math.mod(i, 2) == 0) {
+                Volunteer_Shift__c shift = listShift[i];
+                countShiftsWithHours++;
+                integer cHoursLDV = 1;
+                // for the first shift, we create a bunch of hours, to ensure our delete handler uses soql-for-loops
+                // on the subquery it uses!
+                if (countShiftsWithHours == 1)
+                    cHoursLDV = 2000;
+                for (integer j = 0; j < cHoursLDV; j++) {
+                    Volunteer_Hours__c hr = new Volunteer_Hours__c(
+                        Contact__c = con.Id,
+                        Volunteer_Job__c = shift.Volunteer_Job__c,
+                        Volunteer_Shift__c = shift.Id,
+                        Status__c = 'Prospect',
+                        Start_Date__c = shift.Start_Date_Time__c.Date(),
+                        Planned_Start_Date_Time__c = shift.Start_Date_Time__c,
+                        Hours_Worked__c = 0,
+                        Number_Of_Volunteers__c = 0
+                    );
+                    listHours.add(hr);
+                }
+            }
+        }
+        system.assert(countTotalShifts > countShiftsWithHours);
+        insert listHours;
+        
+        Test.startTest();
+        delete jrs;
+        Test.stopTest();
+        
+        // verify some Shifts deleted and some detached 
+        listShift = [select Id, Volunteer_Job__c, Start_Date_Time__c, Job_Recurrence_Schedule__c, System_Note__c from Volunteer_Shift__c];
+        system.assertEquals(countShiftsWithHours, listShift.size());
+        for (Volunteer_Shift__c shift : listShift) {
+            system.assertEquals(null, shift.Job_Recurrence_Schedule__c);
+            system.assert(shift.System_Note__c.contains(label.labelJRSShiftRemovedSystemNote));
+        }
+        
+    }
+    //******************************************************************************************************
+    // test that updating a JRS deletes Shifts with no Hours, and just detaches Shifts with Hours.
+    private static testmethod void testJRSUpdate() {
+
+        // create test data
+        Account acc = new Account(name='account1');
+        insert acc;
+        Contact con = new Contact(Lastname='foo', AccountId=acc.Id);
+        insert con;
+        Campaign cmp = new Campaign(recordtypeid=VOL_SharedCode.recordtypeIdVolunteersCampaign, 
+            name='Job Calendar Test Campaign', IsActive=true);
+        insert cmp;
+        Volunteer_Job__c job = new Volunteer_Job__c(name='Job1', campaign__c=cmp.Id);
+        insert job;
+        Job_Recurrence_Schedule__c jrs = new Job_Recurrence_Schedule__c(Volunteer_Job__c = job.Id);
+        jrs.Days_of_Week__c = 'Monday;Wednesday';
+        jrs.Duration__c = 1;
+        jrs.Schedule_Start_Date_Time__c = system.today().addMonths(-1).toStartOfMonth();
+        jrs.Schedule_End_Date__c = system.today().addmonths(2).toStartOfMonth().addDays(-1);
+        jrs.Weekly_Occurrence__c = 'Every';
+        jrs.Desired_Number_of_Volunteers__c = 5;
+        jrs.Description__c = 'initial description';
+        insert jrs;
+        
+        list<Volunteer_Shift__c> listShift = [select Id, Volunteer_Job__c, Start_Date_Time__c from Volunteer_Shift__c];
+        integer countTotalShifts = listShift.size();
+        system.assert(countTotalShifts >= 24);    // we should get at least 4 Mondays & Wednesdays each month.
+        
+        // now create Hours for half the shifts
+        list<Volunteer_Hours__c> listHours = new list<Volunteer_Hours__c>();
+        integer countShiftsWithHours = 0;
+        for (integer i = 0; i < listShift.size(); i++) {
+            if (Math.mod(i, 3) == 0) {
+                Volunteer_Shift__c shift = listShift[i];
+                countShiftsWithHours++;
+                integer cHoursLDV = 1;
+                // for the first shift, we create a bunch of hours, to ensure our delete handler uses soql-for-loops
+                // on the subquery it uses!
+                if (countShiftsWithHours == 1)
+                    cHoursLDV = 2000;
+                for (integer j = 0; j < cHoursLDV; j++) {
+                    Volunteer_Hours__c hr = new Volunteer_Hours__c(
+                        Contact__c = con.Id,
+                        Volunteer_Job__c = shift.Volunteer_Job__c,
+                        Volunteer_Shift__c = shift.Id,
+                        Status__c = 'Prospect',
+                        Start_Date__c = shift.Start_Date_Time__c.Date(),
+                        Planned_Start_Date_Time__c = shift.Start_Date_Time__c,
+                        Hours_Worked__c = 0,
+                        Number_Of_Volunteers__c = 0
+                    );
+                    listHours.add(hr);
+                }
+            }
+        }
+        system.assert(countTotalShifts > countShiftsWithHours);
+        insert listHours;
+        
+        Test.startTest();
+        jrs.Days_of_Week__c = 'Monday;Friday';
+        update jrs;
+        Test.stopTest();
+        
+        // verify some Shifts deleted and some detached 
+        listShift = [select Id, Volunteer_Job__c, Start_Date_Time__c, Job_Recurrence_Schedule__c, System_Note__c 
+            from Volunteer_Shift__c where Job_Recurrence_Schedule__c = null];
+        system.assert(listShift.size() > 0);
+        for (Volunteer_Shift__c shift : listShift) {
+            system.assertEquals(null, shift.Job_Recurrence_Schedule__c);
+            system.assert(shift.System_Note__c.contains(label.labelJRSShiftRemovedSystemNote));
+        }
+        
+    }
 
 }

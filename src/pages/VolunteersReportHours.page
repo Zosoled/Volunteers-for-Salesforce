@@ -1,7 +1,32 @@
-<!--
-// Written by David Habib, copyright (c) 2013 DJH Consulting, djhconsulting.com 
-// This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
--->
+<!-- 
+    Copyright (c) 2016, Salesforce.org
+    All rights reserved.
+    
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+    
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of Salesforce.org nor the names of
+      its contributors may be used to endorse or promote products derived
+      from this software without specific prior written permission.
+ 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
+    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
+    FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
+    COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
+    BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+    LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+    ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+    POSSIBILITY OF SUCH DAMAGE.
+-->  
  
 <apex:page controller="VOL_CTRL_VolunteersReportHours" language="{!strLanguage}" showheader="false" sidebar="false" standardStylesheets="false" cache="false">
 
@@ -23,9 +48,10 @@
   			</apex:repeat>        
 
            	<tr>
-                <td class="cssLabelsColumn" ><apex:outputLabel value="{!$ObjectType.Volunteer_Hours__c.Fields.Volunteer_Job__c.Label + '*'}" /></td>
+                <td class="cssLabelsColumn"><apex:outputLabel rendered="{!hasVolunteerJobs}" value="{!$ObjectType.Volunteer_Hours__c.Fields.Volunteer_Job__c.Label + '*'}" /></td>
                 <td class="cssInputFieldsColumn" >
-	                <apex:selectList value="{!volunteerJobId}" size="1" id="ddlVolunteerJobs">
+                	<apex:outputText rendered="{!NOT(hasVolunteerJobs)}" value="{!$Label.labelPersonalSiteNoJobsForContact}" />
+	                <apex:selectList rendered="{!hasVolunteerJobs}" value="{!volunteerJobId}" size="1" id="ddlVolunteerJobs">
 	                    <apex:actionSupport immediate="false" event="onchange" rerender="formReportHours" status="retrieveStatus" action="{!ChangeVolunteerJob}" />
 	                    <apex:selectOptions value="{!listSOVolunteerJobs}" /> 
 	                </apex:selectList>&nbsp;&nbsp;  
@@ -69,16 +95,34 @@
 	            	value="{!vhours.Hours_Worked__c}" required="false" styleClass="cssInputFields" /></td>
        		</tr>
 
+			<!-- additional fields stored on the fieldset VolunteersReportHoursFS on the vol hours -->
+			<apex:repeat value="{!$ObjectType.Volunteer_Hours__c.FieldSets.VolunteersReportHoursFS}" var="f" >
+				<tr>
+					<td class="cssLabelsColumn" >
+						<apex:outputLabel rendered="{!volunteerJobId != null && (NOT(hasShifts) || volunteerShiftId != null)}" 
+								value="{!f.Label + IF(OR(f.DBRequired, f.Required), '*', '')}" />
+					</td>
+   					<td class="cssInputFieldsColumn" >
+   						<apex:inputField value="{!vhours[f]}" required="false" rendered="{!volunteerJobId != null && (NOT(hasShifts) || volunteerShiftId != null)}"
+   						styleClass="{!IF(f.Type == 'Long Text Area', 'cssInputFields cssTextArea', 'cssInputFields')}" />
+   					</td>
+   				</tr>
+  			</apex:repeat>
+
             <tr>
             	<td></td>        
-           		<td class="cssInputFieldsColumn" ><apex:commandButton value="{!$Label.labelSubmitButton}" action="{!Save}" 
-           			disabled="{!volunteerJobId == null || (hasShifts && volunteerShiftId == null)}" /></td>
+           		<td class="cssInputFieldsColumn" >
+                    <apex:commandButton value="{!$Label.labelSubmitButton}" id="btnSave" 
+                        disabled="{!volunteerJobId == null || (hasShifts && volunteerShiftId == null)}"
+                        onclick="document.getElementById('{!$Component.btnSave}').disabled=true;DoSave();" rerender="formReportHours"/>
+                    <apex:actionFunction name="DoSave" action="{!Save}" />         
+           	    </td>
 			</tr>	
 			<tr>
 				<td></td>
 				<td class="cssInputFieldsColumn" ><apex:outputLabel value="{!strSaveResult}" /></td>
 			</tr>	
 		</table>
-		<apex:Messages style="color:red;" />		   	
+		<apex:Messages style="color:red;" />	   	
 	</apex:form>
 </apex:page>

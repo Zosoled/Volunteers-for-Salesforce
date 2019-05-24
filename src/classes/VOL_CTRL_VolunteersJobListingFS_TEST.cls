@@ -1,11 +1,59 @@
-// Written by David Habib, copyright (c) 2010-2014 DJH Consulting, djhconsulting.com 
-// This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
+/*
+    Copyright (c) 2016, Salesforce.org
+    All rights reserved.
+    
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+    
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of Salesforce.org nor the names of
+      its contributors may be used to endorse or promote products derived
+      from this software without specific prior written permission.
+ 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
+    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
+    FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
+    COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
+    BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+    LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+    ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+    POSSIBILITY OF SUCH DAMAGE.
+*/
 
 @isTest
-public with sharing class VOL_CTRL_VolunteersJobListingFS_TEST {
+private with sharing class VOL_CTRL_VolunteersJobListingFS_TEST {
 
     //==================== TEST METHOD(s) ======================================
-    public static testmethod void UnitTest1() {
+
+
+    /*******************************************************************************************************
+    * @description test the visualforce page controller, running as the Sites Guest User, if such as user
+    * exists.  if not, will run under the current user.
+    * @return void
+    ********************************************************************************************************/
+    private static testmethod void testPageWithSitesGuestUser() {
+        list<User> listU = [Select Username, UserType, Name, IsActive, Id From User where IsActive = true and UserType = 'Guest' and
+        Name like '%Site Guest User%'];
+        if (listU.size() > 0) {
+            system.debug('Running test as Sites Guest User: ' + listU[0]);
+            system.runAs(listU[0]) {
+                UnitTest1();
+            }
+        } else {
+            system.debug('Running test as system.');
+            UnitTest1();
+        }
+    }
+
+    private static void UnitTest1() {
 
         // set up intial test data
         Account acc = new Account(name='Test Individual Bucket Account');
@@ -119,6 +167,20 @@ public with sharing class VOL_CTRL_VolunteersJobListingFS_TEST {
         System.AssertEquals(hoursId, ctrl.volunteerHoursIdSignUp);
         vh = [select Number_Of_Volunteers__c from Volunteer_Hours__c where Id = :hoursId];
         System.AssertEquals(2, vh.Number_Of_Volunteers__c);
+
+        // test permissions checks
+        Integer cContact = [SELECT COUNT() FROM CONTACT];
+        UTIL_Describe.throwException = true;
+        ctrl.ClearVolunteerHoursIdSignUp();
+        ctrl.contact.FirstName = 'New person2';
+        ctrl.contact.LastName = 'New person2 for my test';
+        ctrl.contact.Email = 'newperson2@volunteersjoblisting.com';
+        ctrl.jobIdSignUp = job.id;
+        ctrl.VolunteerShiftSignUp();
+        System.assertEquals(null, ctrl.contactIdSignUp);
+        System.assertEquals(null, ctrl.volunteerHoursIdSignUp);
+        System.assertEquals(cContact, [SELECT COUNT() FROM CONTACT]);
+
     }
 
     public static testmethod void testCampaignHierarchies() {
@@ -142,6 +204,51 @@ public with sharing class VOL_CTRL_VolunteersJobListingFS_TEST {
         Test.setCurrentPage(pageRef2); 
         VOL_CTRL_VolunteersJobListingFS ctrl2 = new VOL_CTRL_VolunteersJobListingFS();
 		system.assertEquals(mapCmp.size(), ctrl2.listVolunteerJobs.size()); 
+    }
+
+    /*******************************************************************************************************
+    * @description test timezone handling for Shifts under LA timezone
+    * @return void
+    */
+    private static testMethod void testTimeZoneHandlingFromLA() {
+        testTimeZoneHandling('America/Los_Angeles');
+    }
+
+    /*******************************************************************************************************
+    * @description test timezone handling for Shifts under Sydney timezone
+    * @return void
+    */
+    private static testMethod void testTimeZoneHandlingFromSydney() {
+        testTimeZoneHandling('Australia/Sydney');
+    }
+
+    /*******************************************************************************************************
+    * @description test timezone handling for Shifts
+    * @param timezone what timezone to run under while creating and querying shifts
+    * @return void
+    */
+    private static void testTimeZoneHandling(String timezone) {
+
+        String uniqueUserName = 'admin' + DateTime.now().getTime() + '@testorg.com';
+        Profile p = [SELECT Id FROM Profile WHERE Name='System Administrator'];
+        User u = new User(Alias = 'admin', Email='admin@testorg.com',
+            EmailEncodingKey='UTF-8', LastName='Testing', LanguageLocaleKey='en_US',
+            LocaleSidKey='en_US', ProfileId = p.Id,
+            TimeZoneSidKey=timezone,
+            UserName=uniqueUserName);
+
+        system.runAs(u) {
+            VOL_SharedCode_TEST.setupTimeZoneTestData();
+
+            PageReference pageRef = Page.VolunteersJobListingFS;
+            Test.setCurrentPage(pageRef);
+
+            //instantiate the controller
+            VOL_CTRL_VolunteersJobListingFS ctrl = new VOL_CTRL_VolunteersJobListingFS();
+            System.AssertEquals(1, ctrl.listVolunteerJobs.size());
+            Volunteer_Job__c job = ctrl.listVolunteerJobs[0];
+            System.assertEquals(48, job.Volunteer_Job_Slots__r.size(), 'we should always get today and tomorrow shifts');
+        }
     }
 
 }

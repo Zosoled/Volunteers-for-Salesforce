@@ -1,24 +1,64 @@
 <!-- 
-// Written by David Habib, copyright (c) 2010-2013 DJH Consulting, djhconsulting.com 
-// This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
--->
+    Copyright (c) 2016, Salesforce.org
+    All rights reserved.
+    
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+    
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of Salesforce.org nor the names of
+      its contributors may be used to endorse or promote products derived
+      from this software without specific prior written permission.
  
-<apex:page controller="VOL_CTRL_JobCalendar" language="{!HTMLENCODE(strLanguage)}" showheader="{!AND(NOT(fPrint),NOT(fWeb))}" 
-    sidebar="{!AND(NOT(fPrint),NOT(fWeb))}" standardStylesheets="{!NOT(fWeb)}" tabStyle="Shift_Calendar__tab" cache="false" > 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
+    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
+    FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
+    COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
+    BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+    LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+    ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+    POSSIBILITY OF SUCH DAMAGE.
+-->  
  
-<script src="{!URLFOR($Resource.jQueryFiles, 'js/jquery-1.4.4.min.js')}"/>
-<script src="{!URLFOR($Resource.jQueryFiles, 'js/jquery-ui-1.8.7.custom.min.js')}"/>
-<script src="{!URLFOR($Resource.FullCalendar, 'fullcalendar/fullcalendar.js')}"/>
-<script src="{!URLFOR($Resource.wtooltip, 'wtooltip.min.js')}"/>
-<apex:stylesheet value="{!URLFOR($Resource.FullCalendar, 'fullcalendar/fullcalendar.css')}"/>
-<apex:stylesheet value="{!strURLtoCSSFile}" /> 
+<apex:page controller="VOL_CTRL_JobCalendar"
+    language="{!HTMLENCODE(strLanguage)}"
+    showheader="{!AND(NOT(fPrint),NOT(fWeb))}"
+    sidebar="{!AND(NOT(fPrint),NOT(fWeb))}"
+    standardStylesheets="{!NOT(fWeb)}"
+    tabStyle="Shift_Calendar__tab"
+    cache="false"
+    title="{!$Label.labelCalendarPageTitle}">
+
+    <apex:includeScript value="{!URLFOR($Resource.jQueryFiles, 'js/jquery-3.2.1.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jQueryFiles, 'js/jquery-ui-1.12.1.custom.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.FullCalendar, 'fullcalendar/fullcalendar.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.wtooltip, 'wtooltip.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.FullCalendar, 'fullcalendar/fullcalendar.css')}"/>
+    <apex:stylesheet value="{!strURLtoCSSFile}"/>
+    <apex:variable var="slds" value="slds" rendered="{!!fWeb}">
+        <apex:stylesheet value="{!URLFOR($Resource.sfdo213, '/assets/styles/salesforce-lightning-design-system-vf.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.v4sStaticResources, '/v4s_slds/v4s-common.css')}" />
+    </apex:variable>
+    <apex:variable var="ns" value="{!IF(namespacePrefix != '', namespacePrefix+'__', '')}" />
 
 <script type="text/javascript">
     var j$ = jQuery.noConflict();
-    var colors = new Array({!$Label.labelColorValues}); 
+    var colors = JSON.parse('{!colorValues}');
 
     j$(function() {
-    
+
+        // define curCSS for fullCalendar, which newer version of jquery doesn't include
+        j$.curCSS = function(element, prop, val) {
+            return j$(element).css(prop, val);
+        };
         // initialize the Calendar
         j$('#calendar').fullCalendar({
             
@@ -26,18 +66,18 @@
             selectable: true,
             aspectRatio: 2,
             firstHour: 8,
-            firstDay: {!$Label.labelCalendarFirstDay},
+            firstDay: {!JSINHTMLENCODE($Label.labelCalendarFirstDay)},
             
-            buttonText:     { {!$Label.labelCalendarButtonText} },
-            timeFormat:     { {!$Label.labelCalendarTimeFormat} },
-            columnFormat:   { {!$Label.labelCalendarColumnFormat} },
-            titleFormat:    { {!$Label.labelCalendarTitleFormat} },
-            monthNames:     [ {!$Label.labelCalendarMonthNames} ],
-            monthNamesShort:[ {!$Label.labelCalendarMonthNamesShort} ], 
-            dayNames:       [ {!$Label.labelCalendarDayNames} ],
-            dayNamesShort:  [ {!$Label.labelCalendarDayNamesShort} ],   
-            allDayText:     '{!$Label.labelCalendarAllDay}',
-            axisFormat:     '{!$Label.labelCalendarAxisFormat}',
+            buttonText:     JSON.parse('{!calendarButtonText}'),
+            timeFormat:     JSON.parse('{!calendarTimeFormat}'),
+            columnFormat:   JSON.parse('{!calendarColumnFormat}'),
+            titleFormat:    JSON.parse('{!calendarTitleFormat}'),
+            monthNames:     JSON.parse('{!calendarMonthNames}'),
+            monthNamesShort:JSON.parse('{!calendarMonthNamesShort}'),
+            dayNames:       JSON.parse('{!calendarDayNames}'),
+            dayNamesShort:  JSON.parse('{!calendarDayNamesShort}'),
+            allDayText:     '{!JSINHTMLENCODE($Label.labelCalendarAllDay)}',
+            axisFormat:     '{!JSINHTMLENCODE($Label.labelCalendarAxisFormat)}',
             
             
             header: {
@@ -73,22 +113,22 @@
                     jobId = j$('select[name$=ddlJobId]').val();
                 }
                 if (jobId == null || jobId == '') jobId = '*';
-
-                GW_Volunteers.VOL_CTRL_JobCalendar.getListShiftsWeb2(
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.VOL_CTRL_JobCalendar.getListShiftsWeb2}',
                     campaignId, jobId, strApexDateLocale(start, false), strApexDateLocale(end, false), {!fWeb}, {!fShowCampaignHierarchy}, function(result, event) {
                     if (event.type == 'exception') {
-                        alert(event.message);
+                        document.getElementById("errorMessage").innerText = event.message;
                     } else {
                         if (result != null) {
                             var shifts = [];
                             var jobIds = [];
                             for (var i = 0; i < result.length; i++) {
-                                var dtStart = new Date(result[i].GW_Volunteers__Start_Date_Time__c);
+                                var dtStart = new Date(result[i].{!ns}Start_Date_Time__c);
                                 var dtEnd = new Date(dtStart);
-                                dtEnd.setMinutes(dtEnd.getMinutes() + (result[i].GW_Volunteers__Duration__c * 60));
+                                dtEnd.setMinutes(dtEnd.getMinutes() + (result[i].{!ns}Duration__c * 60));
                                 
                                 // map JobId's to unique colors.
-                                var jobId = result[i].GW_Volunteers__Volunteer_Job__c;
+                                var jobId = result[i].{!ns}Volunteer_Job__c;
                                 
                                 // used to map job to colors on a first come basis,
                                 // but now try to match a color to a job regardless of
@@ -98,32 +138,35 @@
                                 var icolor = numFromId(jobId); 
                                 var colorShift = colors[icolor % colors.length];
                                                                     
-                                var intTotalVolunteers = result[i].GW_Volunteers__Total_Volunteers__c;
+                                var intTotalVolunteers = result[i].{!ns}Total_Volunteers__c;
                                 if (intTotalVolunteers == null) intTotalVolunteers = 0;
-                                var intStillNeeded = result[i].GW_Volunteers__Number_of_Volunteers_Still_Needed__c;
+                                var intStillNeeded = result[i].{!ns}Number_of_Volunteers_Still_Needed__c;
+                                if (intStillNeeded == null) intStillNeeded = 0;
+                                var strShiftNumbers = '{!JSINHTMLENCODE($Label.labelShiftNumbers)}';
+                                strShiftNumbers = strShiftNumbers.replace('{0}', intTotalVolunteers);
+                                strShiftNumbers = strShiftNumbers.replace('{1}', intStillNeeded);
                                 
-                                var strCampaignId = new String(result[i].GW_Volunteers__Volunteer_Job__r.GW_Volunteers__Campaign__c);
+                                var strCampaignId = new String(result[i].{!ns}Volunteer_Job__r.Campaign__c);
                                 var strJobId = new String(jobId);
                                 var strShiftId = new String(result[i].Id);                              
                                 var strUrl;
                                 
                                 if ({!fWeb}) {
-									strUrl = '{!$Site.CurrentSiteUrl + IF(fPersonalSite, 'GW_Volunteers__PersonalSiteJobListing', 'GW_Volunteers__VolunteersJobListingFS')}' +                                     
+                                    strUrl = '{!$Site.CurrentSiteUrl + IF(fPersonalSite, ns+'PersonalSiteJobListing', ns+'VolunteersJobListingFS')}' +
                                         '?Calendar=1&volunteerShiftId=' + strShiftId + '&jobId=' + strJobId +
-                                        '&dtMonthFilter=' + strApexDateLocale(dtStart, true) +
-                                        '{!IF(strParams != null, '&' + strParams, '')}';
+                                        '&dtMonthFilter=' + strApexDateUTC(dtStart) +
+                                        '{!JSENCODE(IF(strParams != null, '&' + strParams, ''))}';
                                 } else if ({!NOT(fPrint)}) {
                                     strUrl = '/' + strShiftId;
                                 }                                
-                                                
-								// note that we lop off the timezone, to avoid FullCalendar from translating it to the current browser locale.                                                
+
+                                // note that we lop off the timezone, to avoid FullCalendar from translating it to the current browser locale.
                                 shifts.push({
-                                    title: result[i].GW_Volunteers__Volunteer_Job__r.Name + (intStillNeeded == 0 ? ' ' + 
-                                        '{!$Label.labelCalendarShiftFull}' : ''),
-                                    description: result[i].GW_Volunteers__Description__c,                           
-                                    strNumbers: '{!$Label.labelCalendarConfirmed}' +  intTotalVolunteers  + 
-                                                '{!$Label.labelCalendarStillNeeded}' + (intStillNeeded == null ? '' : intStillNeeded),
-                                    urlRoster:  '/apex/GW_Volunteers__OpenReport?ReportDevName=Volunteer_Roster' + 
+                                    title: result[i].{!ns}Volunteer_Job__r.Name + (intStillNeeded == 0 ? ' ' +
+                                        '{!JSINHTMLENCODE($Label.labelCalendarShiftFull)}' : ''),
+                                    description: result[i].{!ns}Description__c,
+                                    strNumbers: strShiftNumbers,
+                                    urlRoster:  '/apex/{!ns}OpenReport?ReportDevName=Volunteer_Roster' + 
                                                 '&pv0=' + strCampaignId.substr(0, 15) +
                                                 '&pv1=' + strJobId.substr(0, 15) +     
                                                 '&pv2=' + strShiftId.substr(0,15),    
@@ -138,7 +181,7 @@
                             callback(shifts);
                         }
                     }
-                }, {escape:false});
+                }, {escape:true});
             },             
             
             // the callback to handle any customization of the event's display 
@@ -147,18 +190,24 @@
                 // display additional info.
                 var newinfo = j$('<span />');
                 if ({!fWeb}) {
-                    newinfo.html((event.description != null ? '<br/> ' + event.description  : ''));
+                    newinfo.html(
+                        ({!fShowNumberAvailable} ? '<br/>' + event.strNumbers : '') +
+                        (event.description != null ? '<br/> ' + event.description  : '')
+                        );
                 } else {
-                    newinfo.html('&nbsp;&nbsp;&nbsp;&nbsp;<i>' + event.strNumbers + '</i>' +
+                    newinfo.html('<i>' + event.strNumbers + '</i>' +
                                 ({!NOT(fPrint)} ? 
-                                    '<br/>&nbsp;&nbsp;&nbsp;&nbsp;<a href="' + event.urlRoster + 
-                                    '" target="_blank"><b>{!$Label.labelCalendarRoster}</b></a>' : '') +                            
-                                    (event.description != null ? '<br/>&nbsp;&nbsp;&nbsp;&nbsp;' + event.description  : '') );
+                                    '<br/><a href="' + event.urlRoster + 
+                                    '" target="_blank"><b>{!JSINHTMLENCODE($Label.labelCalendarRoster)}</b></a>' : '') +                            
+                                    (event.description != null ? '<br/>' + event.description  : '') );
                 }
+                element.find('.fc-event-content').css('padding',2);
                 element.find('.fc-event-content').append(newinfo);
+                // we override the title ourselves so its html encoding will get rendered correctly.
+                element.find('.fc-event-title').html(event.title);
                 
                 // also add info to a tooltip
-                if ({!NOT(fWeb)}) {
+                if ({!NOT(fWeb) || fShowNumberAvailable}) {
                     element.wTooltip({ content: '<i>' + event.strNumbers + '</i>' });
                 }           
             }
@@ -166,11 +215,11 @@
         });    // end of initializing fullcalendar
 
         // set initial Calendar View based on parameters to page
-        if ('{!JSENCODE(strCalendarView)}' != '') {
-            j$('#calendar').fullCalendar('changeView', '{!JSENCODE(strCalendarView)}');
+        if ('{!JSINHTMLENCODE(strCalendarView)}' != '') {
+            j$('#calendar').fullCalendar('changeView', '{!JSINHTMLENCODE(strCalendarView)}');
             
             // make taller for full agenda views
-            if ('{!JSENCODE(strCalendarView)}' != 'month') {
+            if ('{!JSINHTMLENCODE(strCalendarView)}' != 'month') {
                 j$('#calendar').fullCalendar('option', 'height', 1200);
             }
         }
@@ -230,58 +279,95 @@
     
 </script>
 
-    <apex:outputPanel id="panelPrint" layout="block" style="float:right" rendered="{!AND(NOT(fPrint),NOT(fWeb))}">
-        <a href="javascript:printWin('/apex/GW_Volunteers__JobCalendar?Print=1' + 
-            '&campaignId={!campaignId}' + 
+<style type="text/css">
+    div.message-panel {
+        color: red;
+        text-align: center;
+        font-size: 15px; 
+        padding: 5px;
+    }
+    div.message-panel:empty {
+        display: none;
+    }
+</style>
+
+    <apex:outputPanel id="panelPrint" layout="block" style="float:right;margin-right:10px;margin-top:10px;" rendered="{!AND(NOT(fPrint),NOT(fWeb))}">
+        <a href="javascript:printWin('/apex/{!ns}JobCalendar?Print=1' +
+            '&campaignId={!campaignId}' +
             '&volunteerJobId={!volunteerJobId}' +
             '&initialDate=' + strApexDateLocale(j$('#calendar').fullCalendar('getDate'), true) +
             '&CalendarView=' + j$('#calendar').fullCalendar('getView').name
-            );" 
-            class="configLinks" title="Printable View (New Window)">{!$Label.labelCalendarPrintableView}</a>
+            );"
+            class="configLinks" title="Printable View (New Window)">{!JSINHTMLENCODE($Label.labelCalendarPrintableView)}</a>
     </apex:outputPanel>
-    <apex:outputPanel layout="block" style="float:right" rendered="{!AND(fPrint,NOT(fWeb))}">
+    <apex:outputPanel layout="block" style="float:right;margin-right:10px;" rendered="{!AND(fPrint,NOT(fWeb))}">
         <ul>
-            <li><a href="javascript:window.close();">{!$Label.labelCalendarCloseWindow}</a></li>
-            <li><a href="javascript:window.print();">{!$Label.labelCalendarPrintThisPage}</a></li>
+            <li><a href="javascript:window.close();">{!JSINHTMLENCODE($Label.labelCalendarCloseWindow)}</a></li>
+            <li><a href="javascript:window.print();">{!JSINHTMLENCODE($Label.labelCalendarPrintThisPage)}</a></li>
         </ul>
     </apex:outputPanel>
-        
-    <apex:sectionHeader title="{!$Label.labelCalendarPageTitle}" rendered="{!AND(NOT(fPrint),NOT(fWeb))}" />   
-    <apex:form > 
-        
-        <apex:pageBlock rendered="{!NOT(fWeb)}" >
-            <apex:pageBlockSection columns="1" >
-                <apex:pageBlockSectionItem >
-                    <apex:outputLabel value="{!$ObjectType.Campaign.Label}" />
-                    <apex:selectList id="ddlCampaignId" value="{!campaignId}" size="1" >
-                        <apex:actionSupport immediate="false" event="onchange" rerender="ddlJobId,panelPrint" 
-                            status="retrieveStatus" action="{!ChangeCampaign}" />
-                        <apex:selectOptions value="{!listSOCampaigns}" /> 
-                    </apex:selectList>  
-                </apex:pageBlockSectionItem>
-                
-                <apex:pageBlockSectionItem >
-                    <apex:outputLabel value="{!$ObjectType.Volunteer_Job__c.Label}" />
-                    <apex:pageBlockSectionItem >
-                        <apex:selectList id="ddlJobId" value="{!volunteerJobId}" size="1" >
-                            <apex:actionSupport immediate="false" event="onchange" rerender="panelPrint" 
-                                status="retrieveStatus" action="{!ChangeVolunteerJob}" />
-                            <apex:selectOptions value="{!listSOVolunteerJobs}" /> 
-                        </apex:selectList>
-                        <apex:actionStatus layout="inline" startText="{!$Label.labelMessageLoading}" stopText="" id="retrieveStatus" 
-                            startStyle="color:green; font-style:italic" stopStyle="color:black;" onstop="j$('#calendar').fullCalendar('refetchEvents');" />
-                    </apex:pageBlockSectionItem>
-                </apex:pageBlockSectionItem>
-                
-            </apex:pageBlockSection>
-        </apex:pageBlock>
-        
-    </apex:form>
 
+    <apex:form id="vfForm">
+        <div class="sfdo213">
+            <!-- PAGE SPINNER -->
+            <div class="slds-spinner_container" style="z-index:999;position:fixed;display:none;" id="divLoading">
+                <div class="slds-spinner--brand slds-spinner slds-spinner--medium" style="position:fixed;top:30%;" aria-hidden="false" role="alert">
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+            <!-- PAGE HEADER -->
+            <apex:outputText rendered="{!AND(NOT(fPrint),NOT(fWeb))}">
+                <div class="slds-page-header" role="banner">
+                    <div class="slds-grid">
+                        <div class="slds-col slds-size--1-of-1">
+                            <h1 class="slds-text-heading--medium">{!JSINHTMLENCODE($Label.labelCalendarPageTitle)}</h1>
+                        </div>
+                    </div>
+                </div>
+            </apex:outputText>
+            <!-- PAGE BODY -->
+            <div id="errorMessage" role="alert" class="message-panel"></div>
+            <apex:outputText rendered="{!NOT(fWeb)}" >
+                <div class="slds-container--small slds-p-top--large slds-p-bottom--small">
+                    <div class="slds-form--horizontal">
+                        <div class="slds-form-element">
+                            <apex:outputLabel value="{!$ObjectType.Campaign.Label}" for="ddlCampaignId" styleClass="slds-form-element__label"/>
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                    <apex:selectList id="ddlCampaignId" value="{!campaignId}" size="1" styleClass="slds-select" >
+                                        <apex:actionSupport immediate="false" event="onchange" rerender="ddlJobId,panelPrint"
+                                            status="retrieveStatus" action="{!ChangeCampaign}" />
+                                        <apex:selectOptions value="{!listSOCampaigns}" />
+                                    </apex:selectList>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-form-element">
+                            <apex:outputLabel value="{!$ObjectType.Volunteer_Job__c.Label}" for="ddlJobId" styleClass="slds-form-element__label" />
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                    <apex:selectList id="ddlJobId" value="{!volunteerJobId}" size="1" styleClass="slds-select" >
+                                        <apex:actionSupport immediate="false" event="onchange" rerender="panelPrint"
+                                            status="retrieveStatus" action="{!ChangeVolunteerJob}" />
+                                        <apex:selectOptions value="{!listSOVolunteerJobs}" />
+                                    </apex:selectList>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- SPINNER STATUS -->
+                <apex:actionStatus id="retrieveStatus"
+                    onstart="document.getElementById('divLoading').style.display = 'block';"
+                    onstop="document.getElementById('divLoading').style.display = 'none'; j$('#calendar').fullCalendar('refetchEvents');" />
+            </apex:outputText>
+        </div>
+    </apex:form>
+    <!-- CALENDAR -->
     <table width="{!IF(fPrint, '1024px', '100%')}">
         <tr><td>
-            <div id='calendar'></div>
+            <div id='calendar' style="{!IF(AND(NOT(fPrint),NOT(fWeb)), 'padding:10px;', null)}}"></div>
         </td></tr>
-    </table>            
-
+    </table>
 </apex:page>

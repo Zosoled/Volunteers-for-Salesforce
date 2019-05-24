@@ -24,14 +24,24 @@
         <name>Contact_Matching_Rule__c</name>
     </fields>
     <fields>
-        <help><!-- If you include a Google Maps API Key, the JobListing pages will display a map on your volunteers site for the Job Location. --></help>
-        <label><!-- Google Maps API Key --></label>
+        <help>Si vous incluez une clé d’API Google Maps, les pages JobListing afficheront une carte sur le site de vos bénévoles pour la localisation de la tâche.</help>
+        <label>Clé d’API Google Maps</label>
         <name>Google_Maps_API_Key__c</name>
     </fields>
     <fields>
         <help>Le nom affiché de l&apos;adresses e-mail à l&apos;échelle de l&apos;organisation utilisée pour envoyer des emails depuis la page du site &apos;personalsitecontactlookup&apos;.</help>
         <label>Adresse email pour toute l&apos;organisation</label>
         <name>Personal_Site_Org_Wide_Email_Name__c</name>
+    </fields>
+    <fields>
+        <help>Rapport d’heures filtré par contact sur le site du personnel</help>
+        <label>Rap. d’heures filtré sur site personnel</label>
+        <name>Personal_Site_Report_Hours_Filtered__c</name>
+    </fields>
+    <fields>
+        <help>Si coché, le site du personnel impose d’inclure un paramètre d’URL « E-mail » qui doit correspondre au champ d’e-mail du contact spécifié.</help>
+        <label>Site pers. requiert vérif. email par URL</label>
+        <name>Personal_Site_Requires_URL_Email_Match__c</name>
     </fields>
     <fields>
         <help>Combien de mois dans le futur doit-on programmer les quarts de travail?</help>

@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -44,62 +40,64 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
-    <deprecated>false</deprecated>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
         <fullName>Days_of_Week__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Days of Week</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Sunday</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Monday</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Tuesday</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Wednesday</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Thursday</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Friday</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Saturday</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Sunday</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Monday</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tuesday</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Wednesday</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Thursday</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Friday</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Saturday</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
         <visibleLines>8</visibleLines>
     </fields>
     <fields>
         <fullName>Description__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>Description text to copy to shift records created on this schedule.</inlineHelpText>
+        <inlineHelpText>Enter any text that you&apos;d like V4S to copy to the Description field of all Shift records created by this Job Recurrence Schedule.</inlineHelpText>
         <label>Description</label>
         <length>32768</length>
         <trackTrending>false</trackTrending>
@@ -108,7 +106,6 @@
     </fields>
     <fields>
         <fullName>Desired_Number_of_Volunteers__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Desired Number of Volunteers</label>
         <precision>6</precision>
@@ -120,10 +117,9 @@
     </fields>
     <fields>
         <fullName>Duration__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Duration</label>
-        <precision>4</precision>
+        <precision>5</precision>
         <required>true</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
@@ -132,7 +128,6 @@
     </fields>
     <fields>
         <fullName>Schedule_End_Date__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Schedule End Date</label>
         <required>false</required>
@@ -141,7 +136,6 @@
     </fields>
     <fields>
         <fullName>Schedule_Start_Date_Time__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Schedule Start Date &amp; Time</label>
         <required>true</required>
@@ -150,9 +144,8 @@
     </fields>
     <fields>
         <fullName>Volunteer_Job__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>The Job this Recurrence Schedule is for.</inlineHelpText>
+        <inlineHelpText>The Volunteer Job this Recurrence Schedule should be associated with.</inlineHelpText>
         <label>Volunteer Job</label>
         <referenceTo>Volunteer_Job__c</referenceTo>
         <relationshipName>Volunteer_Job_Recurrence_Schedules</relationshipName>
@@ -164,42 +157,44 @@
     </fields>
     <fields>
         <fullName>Weekly_Occurrence__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Weekly Occurrence</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Every</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Alternate</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>1st</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>2nd</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>3rd</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>4th</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>5th</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Every</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Alternate</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>1st</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>2nd</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>3rd</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>4th</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>5th</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
         <visibleLines>8</visibleLines>
     </fields>
     <label>Job Recurrence Schedule</label>
@@ -250,4 +245,18 @@
         <searchResultsAdditionalFields>Duration__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>JRS_Days_Of_Week_Required</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISNULL(Days_of_Week__c)</errorConditionFormula>
+        <errorDisplayField>Days_of_Week__c</errorDisplayField>
+        <errorMessage>You must select at least one value for Days of Week.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>JRS_Weekly_Occurrence_Required</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISNULL(Weekly_Occurrence__c)</errorConditionFormula>
+        <errorDisplayField>Weekly_Occurrence__c</errorDisplayField>
+        <errorMessage>You must select at least one value for Weekly Occurrence.</errorMessage>
+    </validationRules>
 </CustomObject>

@@ -2,14 +2,26 @@
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Volunteers for Salesforce</fullName>
     <apiAccessLevel>Unrestricted</apiAccessLevel>
-    <description>Volunteers for Salesforce managed package, by David Habib of DJH Consulting.</description>
-    <namespacePrefix>GW_Volunteers</namespacePrefix>
     <types>
         <members>ComponentControllerBase</members>
-        <members>GW_CTRL_BatchJobsProgress</members>
+        <members>InstallScript</members>
+        <members>InstallScript_TEST</members>
         <members>PageControllerBase</members>
+        <members>QueryBuilder</members>
+        <members>QueryBuilder_TEST</members>
         <members>SoqlListView</members>
+        <members>Telemetry</members>
+        <members>Telemetry_TEST</members>
+        <members>TelemetryService</members>
+        <members>TelemetryService_TEST</members>
+        <members>UTIL_Describe</members>
+        <members>UTIL_Describe_TEST</members>
+        <members>UTIL_JavaScriptSanitizer</members>
+        <members>UTIL_JavaScriptSanitizer_TEST</members>
+        <members>UTIL_JobProgress_CTRL</members>
+        <members>UTIL_PageMessages_CTRL</members>
         <members>VOL_BATCH_Recurrence</members>
+        <members>VOL_BATCH_Recurrence_TEST</members>
         <members>VOL_CTRL_BatchProgress</members>
         <members>VOL_CTRL_BatchProgress_TEST</members>
         <members>VOL_CTRL_JobCalendar</members>
@@ -60,7 +72,10 @@
     </types>
     <types>
         <members>SoqlListView</members>
-        <members>batchJobs</members>
+        <members>UTIL_FormField</members>
+        <members>UTIL_JobProgressLightning</members>
+        <members>UTIL_NavigateBack</members>
+        <members>UTIL_PageMessages</members>
         <name>ApexComponent</name>
     </types>
     <types>
@@ -132,6 +147,7 @@
         <members>Lead.Volunteer_Notes__c</members>
         <members>Lead.Volunteer_Skills__c</members>
         <members>Lead.Volunteer_Status__c</members>
+        <members>PackageSettings__c.NamespacePrefix__c</members>
         <members>Volunteer_Hours__c.Comments__c</members>
         <members>Volunteer_Hours__c.Contact__c</members>
         <members>Volunteer_Hours__c.End_Date__c</members>
@@ -152,13 +168,14 @@
         <members>Volunteer_Job__c.Campaign__c</members>
         <members>Volunteer_Job__c.Description__c</members>
         <members>Volunteer_Job__c.Display_on_Website__c</members>
+        <members>Volunteer_Job__c.External_Signup_Url__c</members>
         <members>Volunteer_Job__c.First_Shift__c</members>
         <members>Volunteer_Job__c.Inactive__c</members>
         <members>Volunteer_Job__c.Location_City__c</members>
         <members>Volunteer_Job__c.Location_Information__c</members>
         <members>Volunteer_Job__c.Location_Street__c</members>
-        <members>Volunteer_Job__c.Location_Zip_Postal_Code__c</members>
         <members>Volunteer_Job__c.Location__c</members>
+        <members>Volunteer_Job__c.Location_Zip_Postal_Code__c</members>
         <members>Volunteer_Job__c.Number_of_Completed_Hours__c</members>
         <members>Volunteer_Job__c.Number_of_Shifts__c</members>
         <members>Volunteer_Job__c.Number_of_Volunteers_Still_Needed__c</members>
@@ -194,6 +211,8 @@
         <members>Volunteers_Settings__c.Contact_Matching_Rule__c</members>
         <members>Volunteers_Settings__c.Google_Maps_API_Key__c</members>
         <members>Volunteers_Settings__c.Personal_Site_Org_Wide_Email_Name__c</members>
+        <members>Volunteers_Settings__c.Personal_Site_Report_Hours_Filtered__c</members>
+        <members>Volunteers_Settings__c.Personal_Site_Requires_URL_Email_Match__c</members>
         <members>Volunteers_Settings__c.Recurring_Job_Future_Months__c</members>
         <members>Volunteers_Settings__c.Signup_Bucket_Account_On_Create__c</members>
         <members>Volunteers_Settings__c.Signup_Creates_Contacts_If_No_Match__c</members>
@@ -201,6 +220,15 @@
         <name>CustomField</name>
     </types>
     <types>
+        <members>PageMessagesConfirm</members>
+        <members>PageMessagesError</members>
+        <members>PageMessagesFatal</members>
+        <members>PageMessagesWarning</members>
+        <members>PermissionCreateException</members>
+        <members>PermissionDeleteException</members>
+        <members>PermissionReadException</members>
+        <members>PermissionUpdateException</members>
+        <members>TelemetryException</members>
         <members>labelButtonAssign</members>
         <members>labelButtonCancel</members>
         <members>labelButtonClose</members>
@@ -231,6 +259,7 @@
         <members>labelCalendarTitleFormat</members>
         <members>labelChoiceAllActiveCampaigns</members>
         <members>labelChoiceAllJobs</members>
+        <members>labelChooseCriteria</members>
         <members>labelColorValues</members>
         <members>labelContactInfoCancelMessage</members>
         <members>labelContactInfoChart</members>
@@ -254,6 +283,8 @@
         <members>labelContactLookupNotFound</members>
         <members>labelContactLookupSuccess</members>
         <members>labelCopySchedule</members>
+        <members>labelEventInThePast</members>
+        <members>labelExternalSignupUrl</members>
         <members>labelFileUploadDescription</members>
         <members>labelFindVolunteers</members>
         <members>labelFindVolunteersAlreadyAssigned</members>
@@ -264,6 +295,7 @@
         <members>labelFindVolunteersHelpCriteria</members>
         <members>labelFindVolunteersHelpFindResults</members>
         <members>labelFindVolunteersNewlyAssigned</members>
+        <members>labelFirstShift</members>
         <members>labelFrom</members>
         <members>labelHide</members>
         <members>labelInformation</members>
@@ -317,9 +349,12 @@
         <members>labelPersonalSiteJobCalendarTitle</members>
         <members>labelPersonalSiteJobListingTitle</members>
         <members>labelPersonalSiteLastnameRequired</members>
+        <members>labelPersonalSiteNoJobsForContact</members>
         <members>labelPersonalSiteReportHoursTitle</members>
         <members>labelPersonalSiteTitle</members>
         <members>labelReturnToCalendar</members>
+        <members>labelShiftClosed</members>
+        <members>labelShiftNumbers</members>
         <members>labelShowHelp</members>
         <members>labelShowMore</members>
         <members>labelSubject</members>
@@ -327,12 +362,25 @@
         <members>labelTemplateObject</members>
         <members>labelTemplateObjectHelpText</members>
         <members>labelTitleJobSignup</members>
+        <members>labelVRSBatchDescription</members>
+        <members>labelVRSBatchProcess</members>
+        <members>labelVRSBatchProcessProgress</members>
+        <members>labelVRSBatchRun</members>
         <members>labelVRSHoursCreatedSystemNote</members>
+        <members>labelVRSHoursRemovedSystemNote</members>
         <members>labelVolunteerReportHoursErrorRequiredField</members>
         <members>labelVolunteerReportHoursNotesNoShifts</members>
         <members>labelVolunteerReportHoursNotesShifts</members>
         <members>labelVolunteerReportHoursThankYou</members>
         <members>labelVolunteerSignupThankYou</members>
+        <members>labelVolunteersHelp</members>
+        <members>labelVolunteersHelpDescription</members>
+        <members>labelVolunteersHelpStep1</members>
+        <members>labelVolunteersHelpStep1Text</members>
+        <members>labelVolunteersHelpStep2</members>
+        <members>labelVolunteersHelpStep2Text</members>
+        <members>labelVolunteersHelpStep3</members>
+        <members>labelVolunteersHelpStep3Text</members>
         <members>labelVolunteersJobListingErrorTooManyVols</members>
         <members>labelVolunteersWizardCampaignInformation</members>
         <members>labelVolunteersWizardClone</members>
@@ -351,6 +399,7 @@
         <members>labelVolunteersWizardSampleShiftName</members>
         <members>labelVolunteersWizardSampleShifts</members>
         <members>labelVolunteersWizardTitle</members>
+        <members>lblRequired</members>
         <name>CustomLabel</name>
     </types>
     <types>
@@ -359,6 +408,7 @@
     </types>
     <types>
         <members>Job_Recurrence_Schedule__c</members>
+        <members>PackageSettings__c</members>
         <members>Volunteer_Hours__c</members>
         <members>Volunteer_Job__c</members>
         <members>Volunteer_Recurrence_Schedule__c</members>
@@ -367,33 +417,76 @@
         <name>CustomObject</name>
     </types>
     <types>
+        <members>Campaign-de</members>
         <members>Campaign-en_US</members>
         <members>Campaign-es</members>
         <members>Campaign-fr</members>
+        <members>Campaign-iw</members>
+        <members>Campaign-ja</members>
+        <members>Campaign-nl_NL</members>
+        <members>Contact-de</members>
         <members>Contact-en_US</members>
         <members>Contact-es</members>
         <members>Contact-fr</members>
+        <members>Contact-iw</members>
+        <members>Contact-ja</members>
+        <members>Contact-nl_NL</members>
+        <members>Job_Recurrence_Schedule__c-de</members>
         <members>Job_Recurrence_Schedule__c-en_US</members>
         <members>Job_Recurrence_Schedule__c-es</members>
         <members>Job_Recurrence_Schedule__c-fr</members>
+        <members>Job_Recurrence_Schedule__c-iw</members>
+        <members>Job_Recurrence_Schedule__c-ja</members>
+        <members>Job_Recurrence_Schedule__c-nl_NL</members>
+        <members>Lead-de</members>
         <members>Lead-en_US</members>
         <members>Lead-es</members>
         <members>Lead-fr</members>
+        <members>Lead-iw</members>
+        <members>Lead-ja</members>
+        <members>Lead-nl_NL</members>
+        <members>PackageSettings__c-de</members>
+        <members>PackageSettings__c-en_US</members>
+        <members>PackageSettings__c-es</members>
+        <members>PackageSettings__c-fr</members>
+        <members>PackageSettings__c-iw</members>
+        <members>PackageSettings__c-ja</members>
+        <members>PackageSettings__c-nl_NL</members>
+        <members>Volunteer_Hours__c-de</members>
         <members>Volunteer_Hours__c-en_US</members>
         <members>Volunteer_Hours__c-es</members>
         <members>Volunteer_Hours__c-fr</members>
+        <members>Volunteer_Hours__c-iw</members>
+        <members>Volunteer_Hours__c-ja</members>
+        <members>Volunteer_Hours__c-nl_NL</members>
+        <members>Volunteer_Job__c-de</members>
         <members>Volunteer_Job__c-en_US</members>
         <members>Volunteer_Job__c-es</members>
         <members>Volunteer_Job__c-fr</members>
+        <members>Volunteer_Job__c-iw</members>
+        <members>Volunteer_Job__c-ja</members>
+        <members>Volunteer_Job__c-nl_NL</members>
+        <members>Volunteer_Recurrence_Schedule__c-de</members>
         <members>Volunteer_Recurrence_Schedule__c-en_US</members>
         <members>Volunteer_Recurrence_Schedule__c-es</members>
         <members>Volunteer_Recurrence_Schedule__c-fr</members>
+        <members>Volunteer_Recurrence_Schedule__c-iw</members>
+        <members>Volunteer_Recurrence_Schedule__c-ja</members>
+        <members>Volunteer_Recurrence_Schedule__c-nl_NL</members>
+        <members>Volunteer_Shift__c-de</members>
         <members>Volunteer_Shift__c-en_US</members>
         <members>Volunteer_Shift__c-es</members>
         <members>Volunteer_Shift__c-fr</members>
+        <members>Volunteer_Shift__c-iw</members>
+        <members>Volunteer_Shift__c-ja</members>
+        <members>Volunteer_Shift__c-nl_NL</members>
+        <members>Volunteers_Settings__c-de</members>
         <members>Volunteers_Settings__c-en_US</members>
         <members>Volunteers_Settings__c-es</members>
         <members>Volunteers_Settings__c-fr</members>
+        <members>Volunteers_Settings__c-iw</members>
+        <members>Volunteers_Settings__c-ja</members>
+        <members>Volunteers_Settings__c-nl_NL</members>
         <name>CustomObjectTranslation</name>
     </types>
     <types>
@@ -461,6 +554,18 @@
         <name>EmailTemplate</name>
     </types>
     <types>
+        <members>CampaignsWithJobs</members>
+        <members>ContactsWithLastWebSignUpLastYear</members>
+        <members>ContactsWithLastWebSignup</members>
+        <members>JobRecurrenceSchedules</members>
+        <members>VolunteerJobs</members>
+        <members>VolunteerJobsDisplayOnWebsite</members>
+        <members>VolunteerJobsLastYear</members>
+        <members>VolunteerShifts</members>
+        <members>VolunteerShiftsCreatedLastYear</members>
+        <name>FeatureParameterInteger</name>
+    </types>
+    <types>
         <members>Campaign.VolunteersWizardFS</members>
         <members>Contact.PersonalSiteContactInfoExtraFS</members>
         <members>Contact.PersonalSiteContactInfoPanel1FS</members>
@@ -474,6 +579,7 @@
         <members>Volunteer_Hours__c.PersonalSiteContactInfoHistory</members>
         <members>Volunteer_Hours__c.PersonalSiteContactInfoUpcomingShifts</members>
         <members>Volunteer_Hours__c.VolunteersJobListingFS</members>
+        <members>Volunteer_Hours__c.VolunteersReportHoursFS</members>
         <members>Volunteer_Recurrence_Schedule__c.NewAndEditVRSFS</members>
         <name>FieldSet</name>
     </types>
@@ -507,11 +613,13 @@
         <members>Volunteer_Reports</members>
         <members>Volunteer_Reports/Active_Volunteers</members>
         <members>Volunteer_Reports/Available_Volunteer_Jobs</members>
+        <members>Volunteer_Reports/Hours_detached_from_their_VRS</members>
         <members>Volunteer_Reports/Inactive_Volunteers</members>
         <members>Volunteer_Reports/New_Sign_Ups_Contacts</members>
         <members>Volunteer_Reports/New_Sign_Ups_Leads</members>
         <members>Volunteer_Reports/Prospective_Volunteers</members>
         <members>Volunteer_Reports/Recent_Volunteers</members>
+        <members>Volunteer_Reports/Shifts_Detached_from_their_JRS</members>
         <members>Volunteer_Reports/Top_Volunteers_by_Lifetime_Hours</members>
         <members>Volunteer_Reports/Top_Volunteers_by_Recent_Hours</members>
         <members>Volunteer_Reports/Unassigned_Volunteers2</members>
@@ -549,18 +657,28 @@
         <members>Bootstrap4Force</members>
         <members>FullCalendar</members>
         <members>jQueryFiles</members>
+        <members>sfdo213</members>
+        <members>v4sStaticResources</members>
         <members>wtooltip</members>
         <name>StaticResource</name>
     </types>
     <types>
+        <members>de</members>
         <members>en_US</members>
         <members>es</members>
         <members>fr</members>
+        <members>iw</members>
+        <members>ja</members>
+        <members>nl_NL</members>
         <name>Translations</name>
     </types>
     <types>
+        <members>Job_Recurrence_Schedule__c.JRS_Days_Of_Week_Required</members>
+        <members>Job_Recurrence_Schedule__c.JRS_Weekly_Occurrence_Required</members>
         <members>Volunteer_Hours__c.HoursRequiredOnCompletion</members>
         <members>Volunteer_Hours__c.StatusMustBeSet</members>
+        <members>Volunteer_Recurrence_Schedule__c.VRS_Days_of_Week_Required</members>
+        <members>Volunteer_Recurrence_Schedule__c.VRS_Weekly_Occurrence_Required</members>
         <name>ValidationRule</name>
     </types>
     <types>
@@ -599,9 +717,9 @@
     <types>
         <members>Contact.Volunteer Signup - Contact</members>
         <members>Lead.Volunteer Signup - Lead</members>
+        <members>Volunteer_Hours__c.Volunteer Hours Reminder Email</members>
         <members>Volunteer_Hours__c.Volunteer Hours - Set End Date</members>
         <members>Volunteer_Hours__c.Volunteer Hours - Set Planned Start Date %26 Time</members>
-        <members>Volunteer_Hours__c.Volunteer Hours Reminder Email</members>
         <members>Volunteer_Hours__c.Volunteer Job Signup</members>
         <name>WorkflowRule</name>
     </types>
@@ -610,5 +728,5 @@
         <members>Lead.Volunteer_Signup_Thank_You_Sent_Lead</members>
         <name>WorkflowTask</name>
     </types>
-    <version>31.0</version>
+    <version>40.0</version>
 </Package>

@@ -1,13 +1,38 @@
-<!--
-// Written by David Habib, copyright (c) 2010-2013 DJH Consulting, djhconsulting.com 
-// This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
--->
+<!-- 
+    Copyright (c) 2016, Salesforce.org
+    All rights reserved.
+    
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+    
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of Salesforce.org nor the names of
+      its contributors may be used to endorse or promote products derived
+      from this software without specific prior written permission.
+ 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
+    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
+    FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
+    COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
+    BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+    LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+    ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+    POSSIBILITY OF SUCH DAMAGE.
+-->  
  
 <apex:page controller="VOL_CTRL_VolunteersJobListing" showheader="false" sidebar="false" standardStylesheets="false" cache="false">
 
-<script src="{!URLFOR($Resource.jQueryFiles, 'js/jquery-1.4.4.min.js')}"/>
-<script src="{!URLFOR($Resource.jQueryFiles, 'js/jquery-ui-1.8.7.custom.min.js')}"/>
-<apex:stylesheet value="{!URLFOR($Resource.jQueryFiles, 'css/ui-lightness/jquery-ui-1.8.7.custom.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.jQueryFiles, 'js/jquery-3.2.1.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.jQueryFiles, 'js/jquery-ui-1.12.1.custom.min.js')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.jQueryFiles, 'css/ui-lightness/jquery-ui-1.12.1.custom.min.css')}"/>
 <apex:stylesheet value="{!strURLtoCSSFile}" /> 
 
 <script type="text/javascript">
@@ -124,14 +149,16 @@
                 <!-- the controller assumes that Group Size is saved in the volunteer hours temp object. -->
                 <apex:outputLabel value="# in Group" for="txtGroupSize" />
                 <apex:inputField value="{!vhTemp.Number_of_Volunteers__c}" id="txtGroupSize" required="true" styleClass="cssInputFields" />
-            </apex:panelGrid>   
+            </apex:panelGrid>
+            <apex:Messages style="color:red;" />
             <p>         
             <apex:inputText value="{!strJobDisplayName}" id="txtJobDisplayName" styleClass="cssSignupDisplayName" style="border-style:none; background-color:transparent;" size="60" /><br/>
             <apex:inputText value="{!strShiftDisplayName}" id="txtShiftDisplayName" styleClass="cssSignupDisplayName" style="border-style:none; background-color:transparent;" size="60" />
             </p>
             
             <!-- before calling the action method, clear the return value fields so we can detect validation failures. -->                          
-            <apex:commandButton value="Sign Up" onclick="
+            <apex:commandButton value="Sign Up" id="btnSignUp" onclick="
+                    j$('input[name$=btnSignUp]').attr('disabled','disabled'); 
                     j$('input[name$=txtContactIdSignUp]').val(''); 
                     j$('input[name$=txtVHIdSignUp]').val(''); 
                     VolunteerShiftSignUp();

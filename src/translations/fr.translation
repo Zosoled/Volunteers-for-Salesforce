@@ -5,6 +5,22 @@
         <name>Groundwire_Volunteers</name>
     </customApplications>
     <customLabels>
+        <label>Réussite</label>
+        <name>PageMessagesConfirm</name>
+    </customLabels>
+    <customLabels>
+        <label>Erreur</label>
+        <name>PageMessagesError</name>
+    </customLabels>
+    <customLabels>
+        <label>Erreur</label>
+        <name>PageMessagesFatal</name>
+    </customLabels>
+    <customLabels>
+        <label>Avertissement</label>
+        <name>PageMessagesWarning</name>
+    </customLabels>
+    <customLabels>
         <label>Assignez</label>
         <name>labelButtonAssign</name>
     </customLabels>
@@ -132,7 +148,11 @@ day: &apos;jour&apos;</label>
         <name>labelChoiceAllJobs</name>
     </customLabels>
     <customLabels>
-        <label>&quot;MediumBlue&quot;,&quot;Green&quot;,&quot;DarkRed&quot;, &quot;Purple&quot;, &quot;DarkSlateGray&quot;, &quot;MidnightBlue&quot;</label>
+        <label><!-- labelChooseCriteria --></label>
+        <name>labelChooseCriteria</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- list of browser color values for JobCalendar --></label>
         <name>labelColorValues</name>
     </customLabels>
     <customLabels>
@@ -184,7 +204,7 @@ day: &apos;jour&apos;</label>
         <name>labelContactInfoNewVolunteerTitle</name>
     </customLabels>
     <customLabels>
-        <label><!-- label for Top % on Contact Info page --></label>
+        <label>En haut</label>
         <name>labelContactInfoRankText</name>
     </customLabels>
     <customLabels>
@@ -222,6 +242,14 @@ day: &apos;jour&apos;</label>
     <customLabels>
         <label>Copiez le programme de</label>
         <name>labelCopySchedule</name>
+    </customLabels>
+    <customLabels>
+        <label>Il n’y a pas d’horaire de travail programmé pour cette tâche.</label>
+        <name>labelEventInThePast</name>
+    </customLabels>
+    <customLabels>
+        <label>Inscription (site externe)</label>
+        <name>labelExternalSignupUrl</name>
     </customLabels>
     <customLabels>
         <label>(chargé à partir de la page web d&apos;inscription des bénévoles).</label>
@@ -262,6 +290,10 @@ day: &apos;jour&apos;</label>
     <customLabels>
         <label>{0} bénévoles sélectionnés ont été affectés à ce travail ou décalent.</label>
         <name>labelFindVolunteersNewlyAssigned</name>
+    </customLabels>
+    <customLabels>
+        <label>Premier horaire :</label>
+        <name>labelFirstShift</name>
     </customLabels>
     <customLabels>
         <label>De</label>
@@ -476,6 +508,10 @@ day: &apos;jour&apos;</label>
         <name>labelPersonalSiteLastnameRequired</name>
     </customLabels>
     <customLabels>
+        <label>Aucune tâche sur laquelle vous pouvez rapporter des heures n’est disponible.</label>
+        <name>labelPersonalSiteNoJobsForContact</name>
+    </customLabels>
+    <customLabels>
         <label>Annonce d&apos;heures</label>
         <name>labelPersonalSiteReportHoursTitle</name>
     </customLabels>
@@ -486,6 +522,14 @@ day: &apos;jour&apos;</label>
     <customLabels>
         <label>retour au Calendrier</label>
         <name>labelReturnToCalendar</name>
+    </customLabels>
+    <customLabels>
+        <label>fermé</label>
+        <name>labelShiftClosed</name>
+    </customLabels>
+    <customLabels>
+        <label>confirmé : {0} - disponible(s) : {1}</label>
+        <name>labelShiftNumbers</name>
     </customLabels>
     <customLabels>
         <label>Montrer l&apos;aide</label>
@@ -516,8 +560,28 @@ day: &apos;jour&apos;</label>
         <name>labelTitleJobSignup</name>
     </customLabels>
     <customLabels>
+        <label>V4S assiste les calendriers de récurrence des bénévoles et les calendriers de récurrence de tâches à l’aide d’un processus par lot pour planifier des horaires de travail et leur assigner des bénévoles. Vous pouvez lancer ce processus manuellement, en cliquant sur le bouton Exécution de lot, ou vous pouvez planifier son exécution automatique chaque nuit.Vous verrez une barre de progression en dessous du processus par lot le plus récent. Il se peut que le processus prenne un certain temps, plus vous avez de données dans votre base de données plus le processus est long. Vous pouvez fermer cette page, le processus continuera en arrière-plan.Pour voir les tâches actuellement prévues, accédez à la &lt;a  href=&apos;/08e?setupid=ScheduledJobs&apos;&gt;page des tâches prévues. Pour planifier l’exécution automatique du processus des calendriers de récurrence, accédez à la page de planification des tâches Apex.</label>
+        <name>labelVRSBatchDescription</name>
+    </customLabels>
+    <customLabels>
+        <label>Processus des calendriers de récurrence</label>
+        <name>labelVRSBatchProcess</name>
+    </customLabels>
+    <customLabels>
+        <label>Progression du processus des calendriers de récurrence</label>
+        <name>labelVRSBatchProcessProgress</name>
+    </customLabels>
+    <customLabels>
+        <label>Exécution de lot</label>
+        <name>labelVRSBatchRun</name>
+    </customLabels>
+    <customLabels>
         <label>Automatiquement Crée pour l&apos;Horaire de Récurrence des Bénévoles:</label>
         <name>labelVRSHoursCreatedSystemNote</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- system annotation when  an Hours record is detached from a VRS --></label>
+        <name>labelVRSHoursRemovedSystemNote</name>
     </customLabels>
     <customLabels>
         <label>{0} est exigé.</label>
@@ -538,6 +602,38 @@ day: &apos;jour&apos;</label>
     <customLabels>
         <label>Merci de votre inscription pour le bénévolat.</label>
         <name>labelVolunteerSignupThankYou</name>
+    </customLabels>
+    <customLabels>
+        <label>Aide pour les bénévoles</label>
+        <name>labelVolunteersHelp</name>
+    </customLabels>
+    <customLabels>
+        <label>Volunteers for Salesforce (V4S) est très facile à prendre en main. Pour plus de ressources, visitez &lt;a href=&quot;https://powerofus.force.com&quot; target=&quot;_blank&quot;&gt;le hub Power of Us&lt;/a&gt;.</label>
+        <name>labelVolunteersHelpDescription</name>
+    </customLabels>
+    <customLabels>
+        <label>Étape 1</label>
+        <name>labelVolunteersHelpStep1</name>
+    </customLabels>
+    <customLabels>
+        <label>Utilisez Trailhead pour en apprendre plus sur V4S et comment le configurer.</label>
+        <name>labelVolunteersHelpStep1Text</name>
+    </customLabels>
+    <customLabels>
+        <label>Étape 2</label>
+        <name>labelVolunteersHelpStep2</name>
+    </customLabels>
+    <customLabels>
+        <label>Explorez davantage de ressources V4S.</label>
+        <name>labelVolunteersHelpStep2Text</name>
+    </customLabels>
+    <customLabels>
+        <label>Étape 3</label>
+        <name>labelVolunteersHelpStep3</name>
+    </customLabels>
+    <customLabels>
+        <label>Impliquez-vous dans la communauté.</label>
+        <name>labelVolunteersHelpStep3Text</name>
     </customLabels>
     <customLabels>
         <label>Il y a seulement {0} bénévoles toujours requis sur ce décalage.</label>
@@ -610,6 +706,10 @@ day: &apos;jour&apos;</label>
     <customLabels>
         <label>Assistant de Bénévolat</label>
         <name>labelVolunteersWizardTitle</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- lblRequired --></label>
+        <name>lblRequired</name>
     </customLabels>
     <customTabs>
         <label>À propos de Bénévoles</label>

@@ -5,6 +5,22 @@
         <name>Groundwire_Volunteers</name>
     </customApplications>
     <customLabels>
+        <label><!-- PageMessagesConfirm --></label>
+        <name>PageMessagesConfirm</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- PageMessagesError --></label>
+        <name>PageMessagesError</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- PageMessagesFatal --></label>
+        <name>PageMessagesFatal</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- PageMessagesWarning --></label>
+        <name>PageMessagesWarning</name>
+    </customLabels>
+    <customLabels>
         <label>Asignar</label>
         <name>labelButtonAssign</name>
     </customLabels>
@@ -132,6 +148,10 @@ day: &apos;día&apos;</label>
         <name>labelChoiceAllJobs</name>
     </customLabels>
     <customLabels>
+        <label><!-- labelChooseCriteria --></label>
+        <name>labelChooseCriteria</name>
+    </customLabels>
+    <customLabels>
         <label><!-- list of browser color values for JobCalendar --></label>
         <name>labelColorValues</name>
     </customLabels>
@@ -224,6 +244,14 @@ day: &apos;día&apos;</label>
         <name>labelCopySchedule</name>
     </customLabels>
     <customLabels>
+        <label><!-- labelEventInThePast --></label>
+        <name>labelEventInThePast</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- labelExternalSignupUrl --></label>
+        <name>labelExternalSignupUrl</name>
+    </customLabels>
+    <customLabels>
         <label>(Subida desde la página web de Voluntarios).</label>
         <name>labelFileUploadDescription</name>
     </customLabels>
@@ -262,6 +290,10 @@ day: &apos;día&apos;</label>
     <customLabels>
         <label>{0} voluntario (s) seleccionados han sido asignados a este trabajo o jornada.</label>
         <name>labelFindVolunteersNewlyAssigned</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- labelFirstShift --></label>
+        <name>labelFirstShift</name>
     </customLabels>
     <customLabels>
         <label>Desde</label>
@@ -476,6 +508,10 @@ day: &apos;día&apos;</label>
         <name>labelPersonalSiteLastnameRequired</name>
     </customLabels>
     <customLabels>
+        <label><!-- displays when the contact hasn&apos;t signed up for any jobs --></label>
+        <name>labelPersonalSiteNoJobsForContact</name>
+    </customLabels>
+    <customLabels>
         <label>Reporte de Horas</label>
         <name>labelPersonalSiteReportHoursTitle</name>
     </customLabels>
@@ -486,6 +522,14 @@ day: &apos;día&apos;</label>
     <customLabels>
         <label>volver al Calendario</label>
         <name>labelReturnToCalendar</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- labelShiftClosed --></label>
+        <name>labelShiftClosed</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- labelShiftNumbers --></label>
+        <name>labelShiftNumbers</name>
     </customLabels>
     <customLabels>
         <label>Mostrar Ayuda</label>
@@ -516,8 +560,28 @@ day: &apos;día&apos;</label>
         <name>labelTitleJobSignup</name>
     </customLabels>
     <customLabels>
+        <label><!-- labelVRSBatchDescription --></label>
+        <name>labelVRSBatchDescription</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- labelVRSBatchProcess --></label>
+        <name>labelVRSBatchProcess</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- labelVRSBatchProcessProgress --></label>
+        <name>labelVRSBatchProcessProgress</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- labelVRSBatchRun --></label>
+        <name>labelVRSBatchRun</name>
+    </customLabels>
+    <customLabels>
         <label>Auto-Creado para Horario de Recurrencia de trabajo:</label>
         <name>labelVRSHoursCreatedSystemNote</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- system annotation when  an Hours record is detached from a VRS --></label>
+        <name>labelVRSHoursRemovedSystemNote</name>
     </customLabels>
     <customLabels>
         <label>{0} es necesario.</label>
@@ -538,6 +602,38 @@ day: &apos;día&apos;</label>
     <customLabels>
         <label>Gracias por registrarse para el voluntariado.</label>
         <name>labelVolunteerSignupThankYou</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- labelVolunteersHelp --></label>
+        <name>labelVolunteersHelp</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- labelVolunteersHelpDescription --></label>
+        <name>labelVolunteersHelpDescription</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- labelVolunteersHelpStep1 --></label>
+        <name>labelVolunteersHelpStep1</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- labelVolunteersHelpStep1Text --></label>
+        <name>labelVolunteersHelpStep1Text</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- labelVolunteersHelpStep2 --></label>
+        <name>labelVolunteersHelpStep2</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- labelVolunteersHelpStep2Text --></label>
+        <name>labelVolunteersHelpStep2Text</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- labelVolunteersHelpStep3 --></label>
+        <name>labelVolunteersHelpStep3</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- labelVolunteersHelpStep3Text --></label>
+        <name>labelVolunteersHelpStep3Text</name>
     </customLabels>
     <customLabels>
         <label>Se necesitan {0} voluntarios más para esta jornada.</label>
@@ -610,6 +706,10 @@ day: &apos;día&apos;</label>
     <customLabels>
         <label>Asistente para Campañas Voluntarias</label>
         <name>labelVolunteersWizardTitle</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- lblRequired --></label>
+        <name>lblRequired</name>
     </customLabels>
     <customTabs>
         <label>Ayuda para Volunteers</label>

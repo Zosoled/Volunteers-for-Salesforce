@@ -135,4 +135,12 @@
     </layouts>
     <nameFieldLabel><!-- VRS ID --></nameFieldLabel>
     <startsWith><!-- Consonant --></startsWith>
+    <validationRules>
+        <errorMessage>Vous devez indiquer au moins une valeur pour les jours de la semaine</errorMessage>
+        <name>VRS_Days_of_Week_Required</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage>Vous devez indiquer au moins une valeur pour l’occurrence hebdomadaire</errorMessage>
+        <name>VRS_Weekly_Occurrence_Required</name>
+    </validationRules>
 </CustomObjectTranslation>

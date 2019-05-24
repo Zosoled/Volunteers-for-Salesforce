@@ -1,5 +1,32 @@
-// Written by David Habib, copyright (c) 2010-2013 DJH Consulting, djhconsulting.com 
-// This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
+/*
+    Copyright (c) 2016, Salesforce.org
+    All rights reserved.
+    
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+    
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of Salesforce.org nor the names of
+      its contributors may be used to endorse or promote products derived
+      from this software without specific prior written permission.
+ 
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
+    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
+    FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
+    COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
+    BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+    LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+    ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+    POSSIBILITY OF SUCH DAMAGE.
+*/
 
 global virtual with sharing class VOL_CTRL_VolunteersBulkEnterHours {
 
@@ -12,8 +39,12 @@ global virtual with sharing class VOL_CTRL_VolunteersBulkEnterHours {
     private VOL_SharedCode volSharedCode;
     private list<string> listStrFields;
     
+    global boolean redirect { get; private set; }
+    global ID idRedirect { get; private set; }
+    
     // constructor
     global VOL_CTRL_VolunteersBulkEnterHours() {
+        redirect = false;
         volSharedCode = new VOL_SharedCode();
         listSOCampaigns = volSharedCode.listSOCampaignsWithJobs;
         
@@ -26,27 +57,26 @@ global virtual with sharing class VOL_CTRL_VolunteersBulkEnterHours {
 
         id = ApexPages.currentPage().getParameters().get('volunteerShiftId');
         if (id != null && id != '') volunteerShiftId = id;
+                
+        // initialize the list of all fields on Volunteer Hours.
+        Map<String, Schema.SObjectField> mapS = Schema.SObjectType.Volunteer_Hours__c.fields.getMap();
+        listStrFields = new list<string>();
+        listStrFields.addAll(mapS.keySet());  
         
+        /* here is code that would use metadata api for fieldsets.
+        unfortunately, the user then won't get an error if they include a field from a related object,
+        but we won't update it either.  Thus I think it is better to just get the fields on the Hours
+        object so if they add a related field to contacts (for example), they will get a runtime error
+        trying to display the page.
         
-		// initialize the list of all fields on Volunteer Hours.
-		Map<String, Schema.SObjectField> mapS = Schema.SObjectType.Volunteer_Hours__c.fields.getMap();
-		listStrFields = new list<string>();
-		listStrFields.addAll(mapS.keySet());  
-		
-		/* here is code that would use metadata api for fieldsets.
-		unfortunately, the user then won't get an error if they include a field from a related object,
-		but we won't update it either.  Thus I think it is better to just get the fields on the Hours
-		object so if they add a related field to contacts (for example), they will get a runtime error
-		trying to display the page.
-		
         for (Schema.FieldSetMember f : SObjectType.Volunteer_Hours__c.FieldSets.MassEditVolunteerHours.getFields()) {
             listStrFields.add(f.getFieldPath());
         }
         // add fields we hardcode on the page
         listStrFields.add('Volunteer_Shift__c');
         listStrFields.add('Contact__c');
-		*/
-		 
+        */
+         
     }   
 
     
@@ -80,29 +110,29 @@ global virtual with sharing class VOL_CTRL_VolunteersBulkEnterHours {
         set;
     }
     
-	// dates to filter the list of shifts and hours we are displaying
+    // dates to filter the list of shifts and hours we are displaying
     global date startDate { get; set; }
     global date endDate { get; set; }
     
     global Volunteer_Hours__c vhDateFilter {
-    	get {
-    		if (vhDateFilter == null) {
-    			vhDateFilter = new Volunteer_Hours__c();
-				
-				// initial date range +- 1 month around passed in Shift or today (if no shift)
-				Date dt;
-				if (volunteerShiftId != null) {
-					Volunteer_Shift__c shift = [select Start_Date_Time__c from Volunteer_Shift__c where Id = :volunteerShiftId];
-					dt = shift.Start_Date_Time__c.date();
-				} else {
-					dt = system.today();
-				}
-				vhDateFilter.Start_Date__c = dt.addMonths(-1).toStartOfMonth();
-				vhDateFilter.End_Date__c = dt.addMonths(2).toStartOfMonth().addDays(-1);      			
-    		}
-    		return vhDateFilter;
-    	}
-    	set;
+        get {
+            if (vhDateFilter == null) {
+                vhDateFilter = new Volunteer_Hours__c();
+                
+                // initial date range +- 1 month around passed in Shift or today (if no shift)
+                Date dt;
+                if (volunteerShiftId != null) {
+                    Volunteer_Shift__c shift = [select Start_Date_Time__c from Volunteer_Shift__c where Id = :volunteerShiftId];
+                    dt = shift.Start_Date_Time__c.date();
+                } else {
+                    dt = system.today();
+                }
+                vhDateFilter.Start_Date__c = dt.addMonths(-1).toStartOfMonth();
+                vhDateFilter.End_Date__c = dt.addMonths(2).toStartOfMonth().addDays(-1);                
+            }
+            return vhDateFilter;
+        }
+        set;
     }
 
     // the user has changed the Volunteer Job dropdown
@@ -123,7 +153,7 @@ global virtual with sharing class VOL_CTRL_VolunteersBulkEnterHours {
         get {
             if (listSOVolunteerShifts == null && volunteerJobId != null) {
                 listSOVolunteerShifts = volSharedCode.listSOVolunteerShiftsOfVolunteerJobId(volunteerJobId, 
-                	vhDateFilter.Start_Date__c, vhDateFilter.End_Date__c, true, false); 
+                    vhDateFilter.Start_Date__c, vhDateFilter.End_Date__c, true, false); 
             }
             return listSOVolunteerShifts;
         }
@@ -157,26 +187,26 @@ global virtual with sharing class VOL_CTRL_VolunteersBulkEnterHours {
     global virtual void FillListVolunteerHours() {
         // if they haven't yet picked a job, there are no hours to show or add.
         if (volunteerJobId == null) return;           
-		
-		// find the existing jobs
-		// we need to use dynamic soql to pick up all custom fields we don't know about
+        
+        // find the existing jobs
+        // we need to use dynamic soql to pick up all custom fields we don't know about
         string strSoql = 'select ';
         string strComma = '';
         for (string strF : listStrFields) {
-        	strSoql += strComma + strF;
-        	strComma = ', ';
+            strSoql += strComma + strF;
+            strComma = ', ';
         }
         strSoql += ' from Volunteer_Hours__c where Volunteer_Job__c = :volunteerJobId ';
         if (volunteerShiftId != null) {
-        	strSoql += ' and Volunteer_Shift__c = :volunteerShiftId ';
+            strSoql += ' and Volunteer_Shift__c = :volunteerShiftId ';
         }
         if (vhDateFilter.Start_Date__c != null) {
-        	Date dtStart = vhDateFilter.Start_Date__c;
-        	strSoql += ' and Start_Date__c >= :dtStart ';
+            Date dtStart = vhDateFilter.Start_Date__c;
+            strSoql += ' and Start_Date__c >= :dtStart ';
         }
         if (vhDateFilter.End_Date__c != null) {
-        	Date dtEnd = vhDateFilter.End_Date__c;
-        	strSoql += ' and Start_Date__c <= :dtEnd ';
+            Date dtEnd = vhDateFilter.End_Date__c;
+            strSoql += ' and Start_Date__c <= :dtEnd ';
         }
         strSoql += ' order by Full_Name__c, Start_Date__c ';
         
@@ -192,28 +222,38 @@ global virtual with sharing class VOL_CTRL_VolunteersBulkEnterHours {
     }     
  
     global virtual void AddMoreEmptyRowsToVolunteerHours() {
-        if (listVolunteerHours == null) return;
+        try {
+            if (listVolunteerHours == null) return;
 
-        // cache info from Shift if we have it
-        double hoursWorked;
-        date dateStart;
-        if (volunteerShiftId != null) {
+            // cache info from Shift if we have it
+            double hoursWorked;
+            date dateStart;
+            if (volunteerShiftId != null) {
+                // Ensure the user has access to the object and fields before querying
+                UTIL_Describe.checkReadAccess(UTIL_Describe.StrTokenNSPrefix('Volunteer_Shift__c'),
+                    new Set<String>{'Id',
+                        UTIL_Describe.StrTokenNSPrefix('Duration__c'),
+                        UTIL_Describe.StrTokenNSPrefix('Start_Date_Time__c')});
+                
                 Volunteer_Shift__c vs = [select Id, Duration__c, Start_Date_Time__c from Volunteer_Shift__c where Id = :volunteerShiftId];
                 hoursWorked = vs.Duration__c;
                 dateStart = vs.Start_Date_Time__c.date();
-        }
-        
-        for (integer i = 0; i < cEmptyVolunteerHourRecords; i++) { 
-            Volunteer_Hours__c vh = new Volunteer_Hours__c();
-            vh.Status__c = 'Completed';
-            vh.Number_of_Volunteers__c = 1;
-            vh.Volunteer_Job__c = volunteerJobId;
-            vh.Volunteer_Shift__c = volunteerShiftId;
-            if (volunteerShiftId != null) {
-                vh.Hours_Worked__c = hoursWorked;
-                vh.Start_Date__c = dateStart;
             }
-            listVolunteerHours.add(vh);
+            
+            for (integer i = 0; i < cEmptyVolunteerHourRecords; i++) { 
+                Volunteer_Hours__c vh = new Volunteer_Hours__c();
+                vh.Status__c = 'Completed';
+                vh.Number_of_Volunteers__c = 1;
+                vh.Volunteer_Job__c = volunteerJobId;
+                vh.Volunteer_Shift__c = volunteerShiftId;
+                if (volunteerShiftId != null) {
+                    vh.Hours_Worked__c = hoursWorked;
+                    vh.Start_Date__c = dateStart;
+                }
+                listVolunteerHours.add(vh);
+            }
+        } catch (Exception e) {
+            ApexPages.addMessages(e);            
         }       
     }
     
@@ -263,20 +303,26 @@ global virtual with sharing class VOL_CTRL_VolunteersBulkEnterHours {
                     // we couldn't reliably mark dirty records in all scenarios,
                     // so we've decided it is better to always update all records.
                     //if (setVolunteerHoursIdDirty.contains(vh.Id)) 
-                    	listVolunteerHoursUpdate.add(vh);
+                        listVolunteerHoursUpdate.add(vh);
                 } else if (vh.Contact__c != null) {
                     listVolunteerHoursCreate.add(vh);
                 }
             }
+            
             update listVolunteerHoursUpdate;
+            
+            // Ensure the user can create the object 
+            UTIL_Describe.checkObjectCreateAccess(UTIL_Describe.StrTokenNSPrefix('Volunteer_Hours__c'));
             insert listVolunteerHoursCreate;
+            
             strSaveResults = String.valueOf(listVolunteerHoursCreate.size() + listVolunteerHoursUpdate.size()) + ' ' + Label.labelMassEditSaveSuccess;
+            ApexPages.addMessage(new ApexPages.message(ApexPages.Severity.CONFIRM, strSaveResults));
             // successful save, so clear out dirty list
             setVolunteerHoursIdDirty = null;
             return null;            
         } catch (Exception e) {
             strSaveResults = Label.labelMassEditErrorOnSave;
-            ApexPages.addMessages(e);            
+            ApexPages.addMessages(e); 
             return null;
         }
     }
@@ -284,17 +330,27 @@ global virtual with sharing class VOL_CTRL_VolunteersBulkEnterHours {
     //save the Volunteer Hours created or modified, and then close the page.
     global virtual PageReference SaveAndCloseVolunteerHours() {
         SaveVolunteerHours();
-        if (ApexPages.hasMessages()) return null; // don't close window.
+        if (ApexPages.hasMessages(ApexPages.Severity.ERROR) ||
+           ApexPages.hasMessages(ApexPages.Severity.FATAL) ||
+            ApexPages.hasMessages(ApexPages.Severity.WARNING)) {
+                return null; // don't close window.
+        }
         return Cancel();    
     }
     
     // user wants to close this page
     global virtual PageReference Cancel() {
-        string strURL = ApexPages.currentPage().getParameters().get('retURL');
-        if (strURL == null || strURL == '') strURL = '\\';
-        PageReference p = new PageReference(strURL);
-        p.setRedirect(true);
-        return p;
+        // figure out which object to return to.
+        if (volunteerShiftId != null)
+            idRedirect = volunteerShiftId;
+        else if (volunteerJobId != null)
+            idRedirect = volunteerJobId;
+        else
+            idRedirect = campaignId;
+        
+        // trigger our redirect component to redirect using javascript.
+        redirect = true;
+        return null;
     }
     
     // user wants to add more empty rows to the Volunteer Hours table
@@ -303,7 +359,7 @@ global virtual with sharing class VOL_CTRL_VolunteersBulkEnterHours {
         return null;
     }
     
-	// this was a testmethod which can't be compiled in this class under api 31.  
-	// but because it was marked global, it could not be completely removed.
+    // this was a testmethod which can't be compiled in this class under api 31.  
+    // but because it was marked global, it could not be completely removed.
     global static void CodeCoverageTests() {}
 }

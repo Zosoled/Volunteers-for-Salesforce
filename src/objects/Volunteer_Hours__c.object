@@ -21,10 +21,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>Follow</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>List</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -44,14 +40,15 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
-    <deprecated>false</deprecated>
     <enableActivities>true</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fieldSets>
@@ -63,6 +60,11 @@
         </availableFields>
         <availableFields>
             <field>End_Date__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </availableFields>
+        <availableFields>
+            <field>Planned_Start_Date_Time__c</field>
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
         </availableFields>
@@ -404,9 +406,28 @@
         </displayedFields>
         <label>VolunteersJobListingFS</label>
     </fieldSets>
+    <fieldSets>
+        <fullName>VolunteersReportHoursFS</fullName>
+        <availableFields>
+            <field>Number_of_Volunteers__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </availableFields>
+        <availableFields>
+            <field>Planned_Start_Date_Time__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </availableFields>
+        <description>used in the VolunteerReportHours page - include fields such as comments</description>
+        <displayedFields>
+            <field>Comments__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <label>VolunteersReportHoursFS</label>
+    </fieldSets>
     <fields>
         <fullName>Comments__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Comments</label>
         <length>32000</length>
@@ -416,7 +437,6 @@
     </fields>
     <fields>
         <fullName>Contact__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Contact</label>
         <referenceTo>Contact</referenceTo>
@@ -430,7 +450,6 @@
     </fields>
     <fields>
         <fullName>End_Date__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>End Date</label>
         <required>false</required>
@@ -439,7 +458,6 @@
     </fields>
     <fields>
         <fullName>Full_Name__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>Contact__r.LastName  &amp; &quot;, &quot; &amp;  Contact__r.FirstName</formula>
         <label>Full Name</label>
@@ -450,7 +468,6 @@
     </fields>
     <fields>
         <fullName>Hours_Worked__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Hours Worked</label>
         <precision>7</precision>
@@ -463,7 +480,6 @@
     <fields>
         <fullName>Number_of_Volunteers__c</fullName>
         <defaultValue>1</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Defaults to 1. Increase if this person is bringing additional people whom you are not directly tracking as contacts, and won&apos;t be logging individual volunteer hours against.</inlineHelpText>
         <label>Number of Volunteers</label>
@@ -476,9 +492,8 @@
     </fields>
     <fields>
         <fullName>Planned_Start_Date_Time__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>The actual date &amp; time the volunteer is planning on starting.</inlineHelpText>
+        <inlineHelpText>The date and time the Volunteer is planning to start working.</inlineHelpText>
         <label>Planned Start Date &amp; Time</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
@@ -486,7 +501,6 @@
     </fields>
     <fields>
         <fullName>Shift_Start_Date_Time__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>Volunteer_Shift__r.Start_Date_Time__c</formula>
         <label>Shift Start Date &amp; Time</label>
@@ -496,7 +510,6 @@
     </fields>
     <fields>
         <fullName>Start_Date__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Start Date</label>
         <required>true</required>
@@ -505,44 +518,45 @@
     </fields>
     <fields>
         <fullName>Status__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Status</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Prospect</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Confirmed</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Completed</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>No-Show</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Web Sign Up</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Canceled</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Prospect</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Confirmed</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Completed</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>No-Show</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Web Sign Up</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Canceled</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>System_Note__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>Text information from the system scheduler.</inlineHelpText>
+        <inlineHelpText>Notes generated from the system scheduler.</inlineHelpText>
         <label>System Note</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
@@ -550,7 +564,6 @@
     </fields>
     <fields>
         <fullName>Total_Hours_Worked__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>IF( ISPICKVAL(Status__c, &quot;Completed&quot;), Hours_Worked__c *  Number_of_Volunteers__c, null)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -564,7 +577,6 @@
     </fields>
     <fields>
         <fullName>Volunteer_Campaign_Name__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>Volunteer_Job__r.Campaign__r.Name</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -576,7 +588,6 @@
     </fields>
     <fields>
         <fullName>Volunteer_Campaign__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>Volunteer_Job__r.Campaign__c</formula>
         <label>Volunteer Campaign</label>
@@ -587,7 +598,6 @@
     </fields>
     <fields>
         <fullName>Volunteer_Job__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Volunteer Job</label>
         <referenceTo>Volunteer_Job__c</referenceTo>
@@ -602,7 +612,6 @@
     <fields>
         <fullName>Volunteer_Recurrence_Schedule__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Volunteer Recurrence Schedule</label>
         <referenceTo>Volunteer_Recurrence_Schedule__c</referenceTo>
@@ -615,7 +624,6 @@
     <fields>
         <fullName>Volunteer_Shift__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Volunteer Shift</label>
         <lookupFilter>
@@ -625,7 +633,7 @@
                 <operation>equals</operation>
                 <valueField>$Source.Volunteer_Job__c</valueField>
             </filterItems>
-            <infoMessage>You can only pick a Shift which belongs to the current Job.</infoMessage>
+            <infoMessage>You can only pick a Shift that is associated with the current Job.</infoMessage>
             <isOptional>false</isOptional>
         </lookupFilter>
         <referenceTo>Volunteer_Shift__c</referenceTo>
@@ -678,14 +686,14 @@
         <active>true</active>
         <errorConditionFormula>AND(ISPICKVAL(Status__c, &apos;Completed&apos;) , ISNULL( Hours_Worked__c ))</errorConditionFormula>
         <errorDisplayField>Hours_Worked__c</errorDisplayField>
-        <errorMessage>Please specify the Hours Worked when setting Status to Completed.</errorMessage>
+        <errorMessage>You must specify the Hours Worked when setting Status to Completed.</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>StatusMustBeSet</fullName>
         <active>true</active>
         <errorConditionFormula>ISPICKVAL(Status__c,&quot;&quot; )</errorConditionFormula>
         <errorDisplayField>Status__c</errorDisplayField>
-        <errorMessage>Please specify a Status value.</errorMessage>
+        <errorMessage>You must specify a Status value.</errorMessage>
     </validationRules>
     <webLinks>
         <fullName>Mass_Edit_Volunteer_Hours</fullName>
@@ -698,7 +706,7 @@
         <openType>sidebar</openType>
         <protected>false</protected>
         <requireRowSelection>false</requireRowSelection>
-        <url>/apex/GW_Volunteers__VolunteersBulkEnterHours?campaignId={!Volunteer_Job__c.CampaignId__c}&amp;volunteerJobId={!Volunteer_Job__c.Id}&amp;volunteerShiftId={!Volunteer_Shift__c.Id}&amp;retURL={!
+        <url>/apex/{!$Setup.PackageSettings__c.NamespacePrefix__c}VolunteersBulkEnterHours?campaignId={!Volunteer_Job__c.CampaignId__c}&amp;volunteerJobId={!Volunteer_Job__c.Id}&amp;volunteerShiftId={!Volunteer_Shift__c.Id}&amp;retURL={!
 
 IF(ISNULL( Volunteer_Job__c.Id), 
     URLFOR($Action.Contact.View, Contact.Id), 

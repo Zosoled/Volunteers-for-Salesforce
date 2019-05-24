@@ -1,0 +1,113 @@
+project:
+    name: Volunteers-for-Salesforce
+    package:
+        name: Volunteers for Salesforce
+        namespace: GW_Volunteers
+        api_version: '40.0'
+        install_class: InstallScript
+    git:
+        prefix_release: rel/
+
+tasks:
+    deploy_dev_config:
+        description: Deploys the post install configuration for an unmanaged DE org
+        class_path: cumulusci.tasks.salesforce.Deploy
+        options:
+            path: unpackaged/config/dev
+
+    deploy_qa_config:
+        description: Deploys the post install configuration for a regression or QA scratch org
+        class_path: cumulusci.tasks.salesforce.Deploy
+        options:
+            path: unpackaged/config/qa
+
+    deploy_delete_config:
+        description: Deploys the metadata deletions for the post install DE org config
+        class_path: cumulusci.tasks.salesforce.Deploy
+        options:
+            path: unpackaged/config/delete
+
+    deploy_package_settings:
+        description: Configure the default Volunteers Package Settings
+        class_path: cumulusci.tasks.apex.anon.AnonymousApexTask
+        options:
+            path: scripts/DeployScript.cls
+            apex: insertPackageSettings();
+
+    assign_pset:
+        description: Runs anonymous apex to assign pset for guest user.
+        class_path: cumulusci.tasks.apex.anon.AnonymousApexTask
+        options:
+            apex: >
+                Id psetId = [SELECT ID From PermissionSet WHERE Name = 'V4S_Site_Minimum' LIMIT 1][0].id;
+                Id guestId = [SELECT ID From User WHERE Name = 'Volunteers Site Guest User' LIMIT 1][0].id;
+                insert new PermissionSetAssignment(PermissionSetId=psetId, AssigneeId=guestId);
+
+flows:
+    ci_feature:
+        description: Deploys the unmanaged package metadata and all dependencies to the target org and runs tests
+        tasks:
+            5:
+                task: None
+
+    config_dev:
+        steps:
+            3:
+                task: deploy_delete_config
+            4:
+                task: deploy_dev_config
+                options:
+                    unmanaged: True
+                    namespace_inject: $project_config.project__package__namespace
+            5:
+                task: deploy_package_settings
+            6:
+                task: assign_pset
+                ignore_failure: True
+
+    config_qa:
+        steps:
+            3:
+                task: deploy_delete_config
+            4:
+                task: deploy_dev_config
+                options:
+                    unmanaged: True
+                    namespace_inject: $project_config.project__package__namespace
+            5:
+                task: deploy_qa_config
+                options:
+                    unmanaged: True
+                    namespace_inject: $project_config.project__package__namespace
+            6:
+                task: deploy_package_settings
+            7:
+                task: assign_pset
+                ignore_failure: True
+
+    install_regression:
+        steps:
+            5:
+                task: deploy_delete_config
+            6:
+                task: deploy_dev_config
+                options:
+                    unmanaged: False
+                    namespace_inject: $project_config.project__package__namespace
+            7:
+                task: deploy_qa_config
+                options:
+                    unmanaged: False
+                    namespace_inject: $project_config.project__package__namespace
+            8:
+                task: assign_pset
+
+orgs:
+    scratch:
+        dev_namespaced:
+            config_file: orgs/dev.json
+            namespaced: True
+            days: 7
+        prerelease:
+            config_file: orgs/prerelease.json
+

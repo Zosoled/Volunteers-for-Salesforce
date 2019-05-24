@@ -1897,9 +1897,8 @@
     </fieldSets>
     <fields>
         <fullName>First_Volunteer_Date__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>The first Volunteer Hours Start Date</inlineHelpText>
+        <inlineHelpText>The date of the first Volunteer Hours record for this Contact with a status of Completed (read only).</inlineHelpText>
         <label>First Volunteer Date</label>
         <summarizedField>Volunteer_Hours__c.Start_Date__c</summarizedField>
         <summaryFilterItems>
@@ -1913,9 +1912,8 @@
     </fields>
     <fields>
         <fullName>Last_Volunteer_Date__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>The latest Volunteer Hours End Date</inlineHelpText>
+        <inlineHelpText>The date of the most recent Volunteer Hours record for this Contact with a status of Completed (read only).</inlineHelpText>
         <label>Last Volunteer Date</label>
         <summarizedField>Volunteer_Hours__c.End_Date__c</summarizedField>
         <summaryFilterItems>
@@ -1929,7 +1927,6 @@
     </fields>
     <fields>
         <fullName>Unique_Volunteer_Count__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>1</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -1943,50 +1940,50 @@
     <fields>
         <fullName>Volunteer_Auto_Reminder_Email_Opt_Out__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>Check if this Contact does not want to receive automatic reminder emails about their upcoming shifts.  Used in the &quot;Volunteer Hours Reminder Email&quot; workflow rule.</inlineHelpText>
+        <inlineHelpText>If selected, this Contact will not receive automatic reminder emails about their upcoming Volunteer Shifts.</inlineHelpText>
         <label>Volunteer Auto-Reminder Email Opt Out</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Volunteer_Availability__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Volunteer Availability</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Weekdays</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Weekends</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Morning</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Afternoon</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Weekly</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Weekdays</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Weekends</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Morning</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Afternoon</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Weekly</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
         <visibleLines>8</visibleLines>
     </fields>
     <fields>
         <fullName>Volunteer_Hours__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>Total number of Hours that are Completed. Hours with other status values are not included.</inlineHelpText>
+        <inlineHelpText>Total number of Volunteer Hours with a Status of Completed. Hours with other status values aren&apos;t included.</inlineHelpText>
         <label>Volunteer Hours</label>
         <summarizedField>Volunteer_Hours__c.Hours_Worked__c</summarizedField>
         <summaryFilterItems>
@@ -2000,9 +1997,8 @@
     </fields>
     <fields>
         <fullName>Volunteer_Last_Web_Signup_Date__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>The date of the most recent volunteer signup from the web.  Used to trigger workflow for notifications and thank you emails.</inlineHelpText>
+        <inlineHelpText>The date of this Contact&apos;s most recent online volunteer signup. This field is automatically populated from the web signup form. Used to trigger workflow for notification and thank you emails.</inlineHelpText>
         <label>Volunteer Last Web Signup Date</label>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
@@ -2010,9 +2006,8 @@
     </fields>
     <fields>
         <fullName>Volunteer_Manager_Notes__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>Notes about the volunteer that the volunteer manager or organization staff want to record.</inlineHelpText>
+        <inlineHelpText>Internal notes about the volunteer from your organizational staff.</inlineHelpText>
         <label>Volunteer Manager Notes</label>
         <length>32000</length>
         <trackFeedHistory>false</trackFeedHistory>
@@ -2021,9 +2016,8 @@
     </fields>
     <fields>
         <fullName>Volunteer_Notes__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>Notes from the volunteer.  Note that the web signup form appends the volunteers comments to this field.</inlineHelpText>
+        <inlineHelpText>Notes from the volunteer. If the volunteer included comments in the web signup form, those comments will be appended here.</inlineHelpText>
         <label>Volunteer Notes</label>
         <length>32000</length>
         <trackFeedHistory>false</trackFeedHistory>
@@ -2032,9 +2026,8 @@
     </fields>
     <fields>
         <fullName>Volunteer_Organization__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>The organization, company, or group the contact is volunteering on behalf of.</inlineHelpText>
+        <inlineHelpText>The organization, company, or group the Contact is volunteering on behalf of.</inlineHelpText>
         <label>Volunteer Organization</label>
         <length>255</length>
         <required>false</required>
@@ -2044,66 +2037,70 @@
     </fields>
     <fields>
         <fullName>Volunteer_Skills__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>Select the skill(s) this contact has that should be used to find volunteer jobs.</inlineHelpText>
+        <inlineHelpText>Indicates which skills this Contact has. You can filter on skills when you look for volunteers for particular Jobs.</inlineHelpText>
         <label>Volunteer Skills</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Computer usage</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Manual labor</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Marketing</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Fundraising</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Event Planning</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Landscaping</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Computer usage</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Manual labor</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Marketing</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Fundraising</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Event Planning</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Landscaping</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
         <visibleLines>8</visibleLines>
     </fields>
     <fields>
         <fullName>Volunteer_Status__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Volunteer Status</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Active</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inactive</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>New Sign Up</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Prospective</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Active</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Inactive</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>New Sign Up</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Prospective</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
 </CustomObject>
